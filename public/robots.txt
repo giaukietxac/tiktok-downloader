@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://tratuiloc.xyz/sitemap.xml
