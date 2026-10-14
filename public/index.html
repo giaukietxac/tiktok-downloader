@@ -3,8 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TraTuiLoc – Tải Video TikTok Không Logo Miễn Phí</title>
-  <meta name="description" content="Tải video TikTok không logo, không watermark miễn phí. Hỗ trợ TikTok và Douyin, chất lượng HD. Không cần đăng ký, không giới hạn." />
+  <title>TraTuiLoc – Tải Video TikTok Không Logo &amp; Tách Nhạc MP3 Miễn Phí</title>
+  <meta name="description" content="Tải video TikTok &amp; Douyin không logo, không watermark chất lượng HD gốc, tải nhạc MP3 miễn phí. Tải 1-chạm tốc độ cao, không cần đăng ký tài khoản." />
+  <meta name="keywords" content="tai video tiktok, tiktok downloader, download tiktok no watermark, tai tiktok khong logo, tai mp3 tiktok, douyin downloader, tratuiloc" />
+  <meta name="author" content="TraTuiLoc" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://tratuiloc.xyz" />
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+
+  <!-- ── Open Graph / Facebook / Zalo ─────────────────────────────────── -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://tratuiloc.xyz" />
+  <meta property="og:title" content="TraTuiLoc – Tải Video TikTok Không Logo &amp; Nhạc MP3 Miễn Phí" />
+  <meta property="og:description" content="Tải video TikTok &amp; Douyin không watermark chất lượng HD gốc, tách nhạc nền MP3 miễn phí. Tải 1-chạm tốc độ cao, không cần cài app." />
+  <meta property="og:image" content="https://tratuiloc.xyz/assets/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content="vi_VN" />
+
+  <!-- ── Twitter Cards ────────────────────────────────────────────────── -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://tratuiloc.xyz" />
+  <meta name="twitter:title" content="TraTuiLoc – Tải Video TikTok Không Logo Miễn Phí" />
+  <meta name="twitter:description" content="Tải video TikTok &amp; Douyin không watermark chất lượng HD gốc, tách nhạc MP3 miễn phí." />
+  <meta name="twitter:image" content="https://tratuiloc.xyz/assets/og-image.png" />
+
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -14,84 +38,174 @@
       theme: {
         extend: {
           fontFamily: { sans: ['Inter', 'sans-serif'] },
-          colors: { brand: { from: '#8B5CF6', to: '#EC4899' } }
+          colors: {
+            brand: { from: '#8B5CF6', to: '#EC4899' }
+          }
         }
       }
     }
   </script>
+  <script>
+    // Khởi tạo Theme tức thì để không bị nháy giao diện
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light' || (!savedTheme && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+      document.documentElement.classList.add('light');
+    }
+  </script>
 </head>
 <body class="bg-gray-950 text-white font-sans min-h-screen flex flex-col">
+
+  <!-- ── Header ─────────────────────────────────────────────────────────── -->
   <header class="border-b border-white/10 backdrop-blur-sm sticky top-0 z-50 bg-gray-950/80">
     <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
       <a href="/" class="flex items-center gap-2 group">
         <span class="text-2xl">🎬</span>
-        <span class="text-xl font-bold bg-gradient-to-r from-violet-400 to-pink-400 bg-clip-text text-transparent">TraTuiLoc</span>
+        <span class="text-xl font-bold bg-gradient-to-r from-violet-400 to-pink-400 bg-clip-text text-transparent">
+          TraTuiLoc
+        </span>
       </a>
-      <nav class="hidden sm:flex items-center gap-6 text-sm text-gray-400">
-        <a href="/#how-to" class="hover:text-white transition-colors">Hướng dẫn</a>
-        <a href="/#faq" class="hover:text-white transition-colors">FAQ</a>
-      </nav>
+      <div class="flex items-center gap-4">
+        <nav class="hidden sm:flex items-center gap-6 text-sm text-gray-400">
+          <a href="/#how-to" class="hover:text-white transition-colors">Hướng dẫn</a>
+          <a href="/#faq" class="hover:text-white transition-colors">FAQ</a>
+        </nav>
+        <!-- Nút chuyển đổi Dark/Light Mode -->
+        <button id="themeToggle" type="button" title="Chuyển chế độ Sáng / Tối" aria-label="Toggle theme">
+          <!-- Icon Mặt Trời (Hiện khi ở Dark mode) -->
+          <svg id="iconSun" class="w-5 h-5 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          <!-- Icon Mặt Trăng (Hiện khi ở Light mode) -->
+          <svg id="iconMoon" class="w-5 h-5 text-indigo-600 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+        </button>
+      </div>
     </div>
   </header>
 
+  <!-- ── Hero Section ───────────────────────────────────────────────────── -->
   <main class="flex-1">
     <section class="py-16 px-4 text-center relative overflow-hidden">
-      <div class="absolute inset-0 pointer-events-none">
+      <!-- Background glow effect -->
+      <div class="absolute inset-0 pointer-events-none glow-bg">
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-violet-600/20 rounded-full blur-3xl"></div>
       </div>
+
       <div class="relative max-w-3xl mx-auto">
         <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet-500/20 border border-violet-500/30 text-violet-300 text-sm font-medium mb-6">
           <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
           Miễn phí · Không logo · Không giới hạn
         </div>
+
         <h1 class="text-4xl sm:text-5xl font-extrabold leading-tight mb-4">
           Tải Video TikTok<br />
-          <span class="bg-gradient-to-r from-violet-400 to-pink-400 bg-clip-text text-transparent">Không Logo, Miễn Phí</span>
+          <span class="bg-gradient-to-r from-violet-400 to-pink-400 bg-clip-text text-transparent">
+            Không Logo, Miễn Phí
+          </span>
         </h1>
         <p class="text-gray-400 text-lg mb-10 max-w-xl mx-auto">
           Hỗ trợ TikTok & Douyin, chất lượng HD gốc, không cần đăng ký, không cài ứng dụng.
         </p>
-        <div class="bg-white/5 border border-white/10 rounded-2xl p-4 sm:p-6 backdrop-blur-sm">
+
+        <!-- ── Input Form ─────────────────────────────────────────────── -->
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-4 sm:p-6 backdrop-blur-sm shadow-xl">
           <div class="flex flex-col sm:flex-row gap-3">
-            <input id="urlInput" type="url" placeholder="Dán link TikTok hoặc Douyin vào đây..." class="flex-1 bg-gray-900 border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-violet-500 text-sm transition-all" autocomplete="off" spellcheck="false" />
-            <button id="downloadBtn" class="btn-gradient flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-semibold text-white text-sm whitespace-nowrap transition-all active:scale-95 disabled:opacity-60">
+            <div class="relative flex-1">
+              <input
+                id="urlInput"
+                type="url"
+                placeholder="Dán link TikTok hoặc Douyin vào đây..."
+                class="w-full bg-gray-900 border border-white/10 rounded-xl pl-4 pr-24 py-3.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent text-sm transition-all"
+                autocomplete="off"
+                spellcheck="false"
+              />
+              <button
+                id="pasteBtn"
+                type="button"
+                class="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1.5 text-xs font-semibold text-violet-400 hover:text-violet-300 bg-violet-500/15 hover:bg-violet-500/25 border border-violet-500/20 rounded-lg transition-all flex items-center gap-1 active:scale-95"
+                title="Dán nhanh từ bộ nhớ tạm"
+              >
+                <span>📋</span> <span>Dán</span>
+              </button>
+            </div>
+            <button
+              id="downloadBtn"
+              class="btn-gradient flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-semibold text-white text-sm whitespace-nowrap transition-all active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed shadow-md w-full sm:w-auto"
+            >
               <span id="btnText">⬇ Tải xuống</span>
             </button>
           </div>
+
+          <!-- Error Message -->
           <div id="errorMsg" class="hidden mt-4 flex items-center gap-2 text-red-400 text-sm bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-3">
-            <span>⚠️</span><span id="errorText">Lỗi</span>
+            <span>⚠️</span>
+            <span id="errorText">Lỗi</span>
           </div>
         </div>
       </div>
     </section>
 
+    <!-- ── Result Section ─────────────────────────────────────────────── -->
     <section id="resultSection" class="hidden max-w-3xl mx-auto px-4 pb-12">
       <div class="bg-white/5 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-sm">
+        <!-- Video Preview -->
         <div class="flex flex-col sm:flex-row gap-4 p-5">
           <div class="flex-shrink-0">
-            <img id="thumbnail" src="" alt="Thumbnail" class="w-full sm:w-28 h-40 sm:h-40 object-cover rounded-xl bg-gray-800" onerror="this.style.display='none'" />
+            <img
+              id="thumbnail"
+              src=""
+              alt="Thumbnail"
+              class="w-full sm:w-28 h-40 sm:h-40 object-cover rounded-xl bg-gray-800"
+              onerror="this.style.display='none'"
+            />
           </div>
           <div class="flex-1 min-w-0">
-            <p id="videoTitle" class="text-white font-semibold text-sm leading-relaxed line-clamp-3 mb-4"></p>
+            <p id="videoTitle" class="text-white font-semibold text-sm leading-relaxed line-clamp-2 mb-1"></p>
+            <p id="musicInfo" class="text-violet-300 text-xs mb-4 flex items-center gap-1.5 hidden">
+              <span>🎵</span> <span id="musicTitle" class="truncate"></span>
+            </p>
+            <!-- Download Buttons -->
             <div class="flex flex-col gap-2.5">
-              <a id="btnNoWatermark" href="#" target="_blank" download class="btn-gradient flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-semibold text-white text-sm transition-all active:scale-95 text-center">
-                ⬇ Tải MP4 (Trực Tiếp - Không Logo)
+              <a
+                id="btnNoWatermark"
+                href="#"
+                target="_blank"
+                download
+                class="btn-gradient flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-semibold text-white text-sm transition-all active:scale-95 text-center"
+              >
+                🎬 Tải Video HD (Không Logo)
               </a>
-              <a id="btnWithWatermark" href="#" target="_blank" download class="flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-semibold text-gray-300 text-sm bg-white/10 hover:bg-white/15 border border-white/10 transition-all active:scale-95 text-center">
-                ⬇ Tải Dự Phòng (Máy Chủ)
+              <a
+                id="btnMP3"
+                href="#"
+                target="_blank"
+                download
+                class="flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-semibold text-pink-300 text-sm bg-pink-500/10 hover:bg-pink-500/20 border border-pink-500/30 transition-all active:scale-95 text-center hidden"
+              >
+                🎵 Tải Nhạc MP3 (Chất Lượng Gốc)
               </a>
             </div>
           </div>
         </div>
+
+        <!-- Info bar -->
         <div class="border-t border-white/10 px-5 py-3 bg-white/5">
-          <p class="text-xs text-gray-500 text-center">Video được tải thẳng từ máy chủ TikTok/Douyin — TraTuiLoc không lưu trữ bất kỳ nội dung nào.</p>
+          <p class="text-xs text-gray-500 text-center">
+            Video được tải thẳng từ máy chủ TikTok/Douyin — TraTuiLoc không lưu trữ bất kỳ nội dung nào.
+          </p>
         </div>
       </div>
+
+      <!-- Try again button -->
       <div class="text-center mt-4">
-        <button id="tryAgainBtn" class="text-sm text-gray-400 hover:text-white transition-colors underline underline-offset-2">← Tải video khác</button>
+        <button id="tryAgainBtn" class="text-sm text-gray-400 hover:text-white transition-colors underline underline-offset-2">
+          ← Tải video khác
+        </button>
       </div>
     </section>
 
+    <!-- ── How To Section ──────────────────────────────────────────────── -->
     <section id="how-to" class="py-16 px-4 border-t border-white/10">
       <div class="max-w-4xl mx-auto">
         <h2 class="text-2xl font-bold text-center mb-10">Cách tải video TikTok không logo</h2>
@@ -109,12 +223,13 @@
           <div class="text-center p-6 bg-white/5 rounded-2xl border border-white/10">
             <div class="w-12 h-12 bg-green-500/20 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4">✅</div>
             <h3 class="font-semibold mb-2">Bước 3</h3>
-            <p class="text-gray-400 text-sm">Chọn <strong class="text-white">Tải MP4 (Không Logo)</strong> để lưu video sạch về máy</p>
+            <p class="text-gray-400 text-sm">Chọn <strong class="text-white">Tải Video HD</strong> hoặc <strong class="text-white">Tải Nhạc MP3</strong> để lưu về máy</p>
           </div>
         </div>
       </div>
     </section>
 
+    <!-- ── FAQ Section ────────────────────────────────────────────────── -->
     <section id="faq" class="py-16 px-4 border-t border-white/10">
       <div class="max-w-3xl mx-auto">
         <h2 class="text-2xl font-bold text-center mb-10">Câu hỏi thường gặp</h2>
@@ -152,6 +267,7 @@
     </section>
   </main>
 
+  <!-- ── Footer ─────────────────────────────────────────────────────────── -->
   <footer class="border-t border-white/10 py-8 px-4 text-center text-sm text-gray-500">
     <p class="mb-3">
       <a href="/privacy" class="hover:text-white transition-colors mx-3">Chính sách bảo mật</a>
@@ -159,7 +275,8 @@
       <a href="/dmca" class="hover:text-white transition-colors mx-3">DMCA</a>
     </p>
     <p class="text-xs text-gray-600">
-      © 2026 TraTuiLoc · tratuiloc.xyz · Dịch vụ này không liên kết với ByteDance, TikTok hoặc Douyin.
+      © 2026 TraTuiLoc · tratuiloc.xyz &nbsp;·&nbsp;
+      Dịch vụ này không liên kết với ByteDance, TikTok hoặc Douyin. Chúng tôi không lưu trữ video trên máy chủ.
     </p>
   </footer>
 
