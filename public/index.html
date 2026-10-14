@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TraTuiLoc – Tải Video TikTok Không Logo Miễn Phí</title>
+  <meta name="description" content="Tải video TikTok không logo, không watermark miễn phí. Hỗ trợ TikTok và Douyin, chất lượng HD. Không cần đăng ký, không giới hạn." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/style.css" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: { brand: { from: '#8B5CF6', to: '#EC4899' } }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-gray-950 text-white font-sans min-h-screen flex flex-col">
+  <header class="border-b border-white/10 backdrop-blur-sm sticky top-0 z-50 bg-gray-950/80">
+    <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-2 group">
+        <span class="text-2xl">🎬</span>
+        <span class="text-xl font-bold bg-gradient-to-r from-violet-400 to-pink-400 bg-clip-text text-transparent">TraTuiLoc</span>
+      </a>
+      <nav class="hidden sm:flex items-center gap-6 text-sm text-gray-400">
+        <a href="/#how-to" class="hover:text-white transition-colors">Hướng dẫn</a>
+        <a href="/#faq" class="hover:text-white transition-colors">FAQ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="flex-1">
+    <section class="py-16 px-4 text-center relative overflow-hidden">
+      <div class="absolute inset-0 pointer-events-none">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-violet-600/20 rounded-full blur-3xl"></div>
+      </div>
+      <div class="relative max-w-3xl mx-auto">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet-500/20 border border-violet-500/30 text-violet-300 text-sm font-medium mb-6">
+          <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+          Miễn phí · Không logo · Không giới hạn
+        </div>
+        <h1 class="text-4xl sm:text-5xl font-extrabold leading-tight mb-4">
+          Tải Video TikTok<br />
+          <span class="bg-gradient-to-r from-violet-400 to-pink-400 bg-clip-text text-transparent">Không Logo, Miễn Phí</span>
+        </h1>
+        <p class="text-gray-400 text-lg mb-10 max-w-xl mx-auto">
+          Hỗ trợ TikTok & Douyin, chất lượng HD gốc, không cần đăng ký, không cài ứng dụng.
+        </p>
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-4 sm:p-6 backdrop-blur-sm">
+          <div class="flex flex-col sm:flex-row gap-3">
+            <input id="urlInput" type="url" placeholder="Dán link TikTok hoặc Douyin vào đây..." class="flex-1 bg-gray-900 border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-violet-500 text-sm transition-all" autocomplete="off" spellcheck="false" />
+            <button id="downloadBtn" class="btn-gradient flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-semibold text-white text-sm whitespace-nowrap transition-all active:scale-95 disabled:opacity-60">
+              <span id="btnText">⬇ Tải xuống</span>
+            </button>
+          </div>
+          <div id="errorMsg" class="hidden mt-4 flex items-center gap-2 text-red-400 text-sm bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-3">
+            <span>⚠️</span><span id="errorText">Lỗi</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="resultSection" class="hidden max-w-3xl mx-auto px-4 pb-12">
+      <div class="bg-white/5 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-sm">
+        <div class="flex flex-col sm:flex-row gap-4 p-5">
+          <div class="flex-shrink-0">
+            <img id="thumbnail" src="" alt="Thumbnail" class="w-full sm:w-28 h-40 sm:h-40 object-cover rounded-xl bg-gray-800" onerror="this.style.display='none'" />
+          </div>
+          <div class="flex-1 min-w-0">
+            <p id="videoTitle" class="text-white font-semibold text-sm leading-relaxed line-clamp-3 mb-4"></p>
+            <div class="flex flex-col gap-2.5">
+              <a id="btnNoWatermark" href="#" target="_blank" download class="btn-gradient flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-semibold text-white text-sm transition-all active:scale-95 text-center">
+                ⬇ Tải MP4 (Không Logo)
+              </a>
+              <a id="btnWithWatermark" href="#" target="_blank" download class="flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-semibold text-gray-300 text-sm bg-white/10 hover:bg-white/15 border border-white/10 transition-all active:scale-95 text-center">
+                ⬇ Tải MP4 (Có Logo)
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="border-t border-white/10 px-5 py-3 bg-white/5">
+          <p class="text-xs text-gray-500 text-center">Video được tải thẳng từ máy chủ TikTok/Douyin — TraTuiLoc không lưu trữ bất kỳ nội dung nào.</p>
+        </div>
+      </div>
+      <div class="text-center mt-4">
+        <button id="tryAgainBtn" class="text-sm text-gray-400 hover:text-white transition-colors underline underline-offset-2">← Tải video khác</button>
+      </div>
+    </section>
+
+    <section id="how-to" class="py-16 px-4 border-t border-white/10">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-2xl font-bold text-center mb-10">Cách tải video TikTok không logo</h2>
+        <div class="grid sm:grid-cols-3 gap-6">
+          <div class="text-center p-6 bg-white/5 rounded-2xl border border-white/10">
+            <div class="w-12 h-12 bg-violet-500/20 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4">📋</div>
+            <h3 class="font-semibold mb-2">Bước 1</h3>
+            <p class="text-gray-400 text-sm">Mở TikTok, nhấn <strong class="text-white">Chia sẻ</strong> → <strong class="text-white">Sao chép liên kết</strong></p>
+          </div>
+          <div class="text-center p-6 bg-white/5 rounded-2xl border border-white/10">
+            <div class="w-12 h-12 bg-pink-500/20 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4">📥</div>
+            <h3 class="font-semibold mb-2">Bước 2</h3>
+            <p class="text-gray-400 text-sm">Dán link vào ô tìm kiếm phía trên, nhấn nút <strong class="text-white">Tải xuống</strong></p>
+          </div>
+          <div class="text-center p-6 bg-white/5 rounded-2xl border border-white/10">
+            <div class="w-12 h-12 bg-green-500/20 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4">✅</div>
+            <h3 class="font-semibold mb-2">Bước 3</h3>
+            <p class="text-gray-400 text-sm">Chọn <strong class="text-white">Tải MP4 (Không Logo)</strong> để lưu video sạch về máy</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="py-16 px-4 border-t border-white/10">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-2xl font-bold text-center mb-10">Câu hỏi thường gặp</h2>
+        <div class="space-y-4">
+          <details class="bg-white/5 border border-white/10 rounded-xl p-5 group">
+            <summary class="font-semibold cursor-pointer flex justify-between items-center">
+              Tải video TikTok có mất phí không?
+              <span class="text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+            </summary>
+            <p class="text-gray-400 text-sm mt-3">Hoàn toàn miễn phí, không giới hạn số lượt tải, không cần đăng ký tài khoản.</p>
+          </details>
+          <details class="bg-white/5 border border-white/10 rounded-xl p-5 group">
+            <summary class="font-semibold cursor-pointer flex justify-between items-center">
+              Có tải được video Douyin không?
+              <span class="text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+            </summary>
+            <p class="text-gray-400 text-sm mt-3">Có! TraTuiLoc hỗ trợ đầy đủ cả TikTok quốc tế và Douyin.</p>
+          </details>
+          <details class="bg-white/5 border border-white/10 rounded-xl p-5 group">
+            <summary class="font-semibold cursor-pointer flex justify-between items-center">
+              Video tải về có thật sự không có logo không?
+              <span class="text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+            </summary>
+            <p class="text-gray-400 text-sm mt-3">Có. Chúng tôi lấy trực tiếp phiên bản gốc không watermark từ máy chủ TikTok/Douyin.</p>
+          </details>
+          <details class="bg-white/5 border border-white/10 rounded-xl p-5 group">
+            <summary class="font-semibold cursor-pointer flex justify-between items-center">
+              TraTuiLoc có lưu video của tôi không?
+              <span class="text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+            </summary>
+            <p class="text-gray-400 text-sm mt-3">Không. TraTuiLoc không lưu trữ bất kỳ video nào. Video được tải thẳng từ máy chủ TikTok/Douyin về thiết bị của bạn.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-white/10 py-8 px-4 text-center text-sm text-gray-500">
+    <p class="mb-3">
+      <a href="/privacy" class="hover:text-white transition-colors mx-3">Chính sách bảo mật</a>
+      <a href="/terms" class="hover:text-white transition-colors mx-3">Điều khoản sử dụng</a>
+      <a href="/dmca" class="hover:text-white transition-colors mx-3">DMCA</a>
+    </p>
+    <p class="text-xs text-gray-600">
+      © 2026 TraTuiLoc · tratuiloc.xyz · Dịch vụ này không liên kết với ByteDance, TikTok hoặc Douyin.
+    </p>
+  </footer>
+
+  <script src="/assets/main.js"></script>
+</body>
+</html>
