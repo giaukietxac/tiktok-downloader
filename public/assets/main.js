@@ -1,3 +1,7 @@
+/* =====================================================================
+   main.js — Logic frontend cho TraTuiLoc
+   ===================================================================== */
+
 const urlInput      = document.getElementById("urlInput");
 const downloadBtn   = document.getElementById("downloadBtn");
 const btnText       = document.getElementById("btnText");
@@ -12,6 +16,7 @@ const tryAgainBtn   = document.getElementById("tryAgainBtn");
 
 let isLoading = false;
 
+// ── Helpers ──────────────────────────────────────────────────────────────────
 function showError(msg) {
   errorText.textContent = msg;
   errorMsg.classList.remove("hidden");
@@ -27,11 +32,13 @@ function setLoading(loading) {
     : "⬇ Tải xuống";
 }
 
+// Tạo link proxy download từ link CDN — giúp tải đúng tên file .mp4
 function makeProxyUrl(cdnUrl, filename) {
   return `/proxy?url=${encodeURIComponent(cdnUrl)}&filename=${encodeURIComponent(filename)}`;
 }
 
 function showResult(data) {
+  // Thumbnail
   if (data.thumbnail) {
     thumbnail.src = data.thumbnail;
     thumbnail.style.display = "block";
@@ -41,14 +48,18 @@ function showResult(data) {
 
   videoTitle.textContent = data.title || "Video TikTok";
 
+  // Tạo tên file an toàn từ tiêu đề video
   const safeTitle = (data.title || "tiktok-video")
     .replace(/[^a-z0-9\s-]/gi, "")
     .trim()
     .replace(/\s+/g, "-")
     .slice(0, 60) || "tiktok-video";
 
-  btnNoWM.href  = makeProxyUrl(data.noWatermark, `${safeTitle}-nowm.mp4`);
-  btnWithWM.href = makeProxyUrl(data.withWatermark || data.noWatermark, `${safeTitle}.mp4`);
+  // 1. NÚT CHÍNH: Tải trực tiếp từ máy chủ CDN của TikTok (Tốn 0 byte băng thông của bạn)
+  btnNoWM.href = data.noWatermark;
+
+  // 2. NÚT DỰ PHÒNG: Tải qua máy chủ (chỉ dùng nếu link trực tiếp bị lỗi hoặc muốn đổi tên file)
+  btnWithWM.href = makeProxyUrl(data.noWatermark, `${safeTitle}-nowm.mp4`);
 
   resultSection.classList.remove("hidden");
   resultSection.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -61,6 +72,7 @@ function reset() {
   urlInput.focus();
 }
 
+// ── Validate URL phía client ─────────────────────────────────────────────────
 function looksLikeTikTokUrl(url) {
   try {
     const u = new URL(url.trim());
@@ -72,8 +84,10 @@ function looksLikeTikTokUrl(url) {
   }
 }
 
+// ── Xử lý tải xuống ──────────────────────────────────────────────────────────
 async function handleDownload() {
   if (isLoading) return;
+
   const url = urlInput.value.trim();
   hideError();
   resultSection.classList.add("hidden");
@@ -114,14 +128,19 @@ async function handleDownload() {
   }
 }
 
+// ── Event Listeners ───────────────────────────────────────────────────────────
 downloadBtn.addEventListener("click", handleDownload);
+
 urlInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter") handleDownload();
 });
+
+// Auto-submit khi paste link TikTok hợp lệ
 urlInput.addEventListener("paste", () => {
   setTimeout(() => {
     const url = urlInput.value.trim();
     if (url && looksLikeTikTokUrl(url)) handleDownload();
   }, 100);
 });
+
 tryAgainBtn.addEventListener("click", reset);
