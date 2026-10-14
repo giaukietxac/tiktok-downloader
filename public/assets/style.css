@@ -1,3 +1,12 @@
+/* =====================================================================
+   style.css — Giao diện & Hiệu ứng TraTuiLoc (Dark / Light Mode)
+   ===================================================================== */
+
+/* ─── Smooth theme transitions ──────────────────────── */
+body, header, input, section, details, footer {
+  transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+}
+
 /* ─── Gradient button ───────────────────────────────── */
 .btn-gradient {
   background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);
@@ -9,6 +18,8 @@
   box-shadow: 0 6px 28px rgba(139, 92, 246, 0.5);
   transform: translateY(-1px);
 }
+
+/* ─── Loading spinner ───────────────────────────────── */
 .spinner {
   width: 18px;
   height: 18px;
@@ -18,16 +29,164 @@
   animation: spin 0.7s linear infinite;
   display: inline-block;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
-details summary::-webkit-details-marker { display: none; }
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── FAQ details smooth open ───────────────────────── */
+details summary::-webkit-details-marker {
+  display: none;
+}
+
+/* ─── Line clamp ────────────────────────────────────── */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 .line-clamp-3 {
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-#resultSection { animation: fadeSlideUp 0.4s ease; }
+
+/* ─── Smooth fade-in for result ─────────────────────── */
+#resultSection {
+  animation: fadeSlideUp 0.4s ease;
+}
 @keyframes fadeSlideUp {
   from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Input Error Shake Animation ───────────────────── */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+.input-error {
+  animation: shake 0.4s ease;
+  border-color: #EF4444 !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25) !important;
+}
+
+/* ─── Paste Button Feedback ─────────────────────────── */
+.paste-success {
+  color: #10B981 !important;
+  background-color: rgba(16, 185, 129, 0.15) !important;
+  border-color: rgba(16, 185, 129, 0.3) !important;
+}
+
+/* =====================================================================
+   LIGHT MODE OVERRIDES (Kích hoạt khi <html class="light">)
+   ===================================================================== */
+html.light body {
+  background-color: #F8FAFC !important;
+  color: #0F172A !important;
+}
+
+html.light header {
+  background-color: rgba(255, 255, 255, 0.88) !important;
+  border-color: rgba(226, 232, 240, 0.9) !important;
+}
+
+html.light .bg-gray-950 {
+  background-color: #F8FAFC !important;
+}
+
+html.light .bg-white\/5 {
+  background-color: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+}
+
+html.light .bg-white\/10 {
+  background-color: #F1F5F9 !important;
+  border-color: #CBD5E1 !important;
+}
+
+html.light .border-white\/10 {
+  border-color: #E2E8F0 !important;
+}
+
+html.light #urlInput {
+  background-color: #FFFFFF !important;
+  border-color: #CBD5E1 !important;
+  color: #0F172A !important;
+}
+html.light #urlInput::placeholder {
+  color: #94A3B8 !important;
+}
+
+html.light .text-white {
+  color: #0F172A !important;
+}
+
+html.light .text-gray-400 {
+  color: #64748B !important;
+}
+
+html.light .text-gray-500 {
+  color: #64748B !important;
+}
+
+html.light .text-gray-600 {
+  color: #94A3B8 !important;
+}
+
+/* Nút gradient chữ luôn màu trắng */
+html.light .btn-gradient,
+html.light .btn-gradient * {
+  color: #FFFFFF !important;
+}
+
+/* Nút MP3 ở chế độ sáng */
+html.light #btnMP3 {
+  color: #BE185D !important;
+  background-color: #FDF2F8 !important;
+  border-color: #FBCFE8 !important;
+}
+html.light #btnMP3:hover {
+  background-color: #FCE7F3 !important;
+}
+
+/* Thẻ FAQ ở chế độ sáng */
+html.light details {
+  background-color: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+}
+
+/* Hiệu ứng hào quang nền ở chế độ sáng */
+html.light .glow-bg {
+  opacity: 0.15 !important;
+}
+
+/* Nút chuyển đổi Theme */
+#themeToggle {
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+#themeToggle:hover {
+  background: rgba(255, 255, 255, 0.12);
+  transform: scale(1.05);
+}
+html.light #themeToggle {
+  border-color: #CBD5E1;
+  background: #FFFFFF;
+  color: #0F172A;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+html.light #themeToggle:hover {
+  background: #F1F5F9;
 }
