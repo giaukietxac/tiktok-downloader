@@ -38,6 +38,68 @@
   <meta name="twitter:description" content="Download TikTok &amp; Douyin videos without watermark, extract MP3 audio." />
   <meta name="twitter:image" content="https://tiksnap.space/assets/og-image.png" />
 
+  <!-- ── Schema.org Structured Data (FAQPage & WebApplication) ─────────── -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "@id": "https://tiksnap.space/#webapp",
+        "name": "TikSnap",
+        "url": "https://tiksnap.space",
+        "applicationCategory": "MultimediaApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "description": "Free online TikTok and Douyin video downloader without watermark in original Full HD quality, convert and extract MP3 sound."
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://tiksnap.space/#faq",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Is downloading TikTok videos on TikSnap free?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, TikSnap is 100% free with unlimited downloads and no registration or account required."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does TikSnap support Chinese Douyin videos?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes! TikSnap fully supports international TikTok and Chinese Douyin videos, photo slides, and MP3 audio extraction."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Are downloaded TikTok videos truly watermark-free?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. TikSnap fetches the clean original video stream directly from ByteDance CDN servers without adding any watermarks or logos."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does TikSnap store or keep copies of downloaded videos?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. TikSnap does not host, store, or archive any videos on its servers. All videos and audio stream directly to your device."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
