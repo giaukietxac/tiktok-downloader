@@ -1,30 +1,64 @@
 /* =====================================================================
-   main.js — Logic frontend cho TraTuiLoc (Multilingual + Dark/Light Mode)
+   main.js — TraTuiLoc Global Frontend
+   Multilingual (13 Languages) + Dark/Light Mode + Download Ad Modal
    ===================================================================== */
 
-const urlInput      = document.getElementById("urlInput");
-const downloadBtn   = document.getElementById("downloadBtn");
-const btnText       = document.getElementById("btnText");
-const errorMsg      = document.getElementById("errorMsg");
-const errorText     = document.getElementById("errorText");
-const resultSection = document.getElementById("resultSection");
-const thumbnail     = document.getElementById("thumbnail");
-const videoTitle    = document.getElementById("videoTitle");
-const musicInfo     = document.getElementById("musicInfo");
-const musicTitle    = document.getElementById("musicTitle");
-const btnNoWM       = document.getElementById("btnNoWatermark");
-const btnMP3        = document.getElementById("btnMP3");
-const tryAgainBtn   = document.getElementById("tryAgainBtn");
-const themeToggle   = document.getElementById("themeToggle");
-const iconSun       = document.getElementById("iconSun");
-const iconMoon      = document.getElementById("iconMoon");
-const langToggle    = document.getElementById("langToggle");
-const langLabel     = document.getElementById("langLabel");
+// ── DOM References ──────────────────────────────────────────────────────────
+const urlInput          = document.getElementById("urlInput");
+const downloadBtn       = document.getElementById("downloadBtn");
+const btnText           = document.getElementById("btnText");
+const errorMsg          = document.getElementById("errorMsg");
+const errorText         = document.getElementById("errorText");
+const resultSection     = document.getElementById("resultSection");
+const thumbnail         = document.getElementById("thumbnail");
+const videoTitle        = document.getElementById("videoTitle");
+const musicInfo         = document.getElementById("musicInfo");
+const musicTitle        = document.getElementById("musicTitle");
+const btnNoWM           = document.getElementById("btnNoWatermark");
+const btnMP3            = document.getElementById("btnMP3");
+const tryAgainBtn       = document.getElementById("tryAgainBtn");
+const themeToggle       = document.getElementById("themeToggle");
+const iconSun           = document.getElementById("iconSun");
+const iconMoon          = document.getElementById("iconMoon");
+
+// Language Dropdown DOM
+const langDropdownContainer = document.getElementById("langDropdownContainer");
+const langToggle        = document.getElementById("langToggle");
+const langLabel         = document.getElementById("langLabel");
+const langArrow         = document.getElementById("langArrow");
+const langMenu          = document.getElementById("langMenu");
+
+// Download Modal DOM
+const downloadModal     = document.getElementById("downloadModal");
+const modalCloseBtn     = document.getElementById("modalCloseBtn");
+const countdownNumber   = document.getElementById("countdownNumber");
+const modalDownloadBtn  = document.getElementById("modalDownloadBtn");
+const modalBtnText      = document.getElementById("modalBtnText");
 
 let isLoading = false;
-let currentLang = "en"; // Mặc định toàn cầu
+let currentLang = "en";
+let pendingDownloadUrl = "";
+let pendingDownloadFilename = "";
+let countdownTimer = null;
 
-// ── Từ điển Song ngữ (i18n Dictionary) ────────────────────────────────────────
+// ── Danh sách 13 Ngôn ngữ Phổ biến Nhất Toàn cầu ──────────────────────────
+const SUPPORTED_LANGUAGES = [
+  { code: "en", label: "English", flag: "🇬🇧" },
+  { code: "vi", label: "Tiếng Việt", flag: "🇻🇳" },
+  { code: "es", label: "Español", flag: "🇪🇸" },
+  { code: "pt", label: "Português", flag: "🇧🇷" },
+  { code: "id", label: "Bahasa Indonesia", flag: "🇮🇩" },
+  { code: "fr", label: "Français", flag: "🇫🇷" },
+  { code: "de", label: "Deutsch", flag: "🇩🇪" },
+  { code: "ja", label: "日本語", flag: "🇯🇵" },
+  { code: "ko", label: "한국어", flag: "🇰🇷" },
+  { code: "ru", label: "Русский", flag: "🇷🇺" },
+  { code: "ar", label: "العربية", flag: "🇸🇦" },
+  { code: "th", label: "ไทย", flag: "🇹🇭" },
+  { code: "zh", label: "中文 (简体)", flag: "🇨🇳" }
+];
+
+// ── Từ điển Đa ngôn ngữ (13 Global Languages) ────────────────────────────────
 const TRANSLATIONS = {
   en: {
     navHowTo: "How to",
@@ -41,10 +75,17 @@ const TRANSLATIONS = {
     adTopNotice: "📢 Space available for Sponsor & Banner ads · Contact: ",
     adResultNotice: "🌟 Sponsored Ad Space · Inquire at ndtoanst2@gmail.com",
     adBottomNotice: "📢 Partner Advertisement · Banner sponsorship: ",
+    adSideNotice: "Skyscraper Banner 160×600",
     btnNoWM: "Download HD Video (No Watermark)",
     btnMP3: "Download MP3 Audio (Original Sound)",
     directDisclaimer: "Videos are downloaded directly from TikTok/Douyin CDN servers — TraTuiLoc stores 0 bytes.",
     tryAgain: "← Download another video",
+    modalTitle: "Preparing your download...",
+    modalWait: "Connecting directly to original CDN server, please wait a moment",
+    modalCounting: "Download link ready in:",
+    modalAdHeading: "Sponsored Partner Advertisement",
+    modalAdText: "High engagement banner slot before download",
+    modalBtnDownload: "⬇ Click here to Get Your File",
     howToTitle: "How to download TikTok video without watermark",
     step1Title: "Step 1",
     step1Desc: 'Open TikTok, tap <strong class="text-white">Share</strong> → <strong class="text-white">Copy Link</strong>',
@@ -94,10 +135,17 @@ const TRANSLATIONS = {
     adTopNotice: "📢 Không gian tài trợ & Quảng cáo banner · Liên hệ: ",
     adResultNotice: "🌟 Quảng cáo tài trợ · Đặt banner liên hệ ndtoanst2@gmail.com",
     adBottomNotice: "📢 Quảng cáo đối tác · Hợp tác đặt banner: ",
+    adSideNotice: "Banner Quảng cáo sườn 160×600",
     btnNoWM: "Tải Video HD (Không Logo)",
     btnMP3: "Tải Nhạc MP3 (Chất Lượng Gốc)",
     directDisclaimer: "Video được tải thẳng từ máy chủ TikTok/Douyin — TraTuiLoc không lưu trữ bất kỳ nội dung nào.",
     tryAgain: "← Tải video khác",
+    modalTitle: "Đang tạo đường link tải...",
+    modalWait: "Vui lòng chờ giây lát trong khi chúng tôi kết nối trực tiếp đến máy chủ gốc",
+    modalCounting: "Link tải sẵn sàng sau:",
+    modalAdHeading: "Không gian Banner Tài trợ",
+    modalAdText: "Vị trí tương tác cao nhất trước khi tải file",
+    modalBtnDownload: "⬇ Bấm vào đây để Nhận file ngay",
     howToTitle: "Cách tải video TikTok không logo",
     step1Title: "Bước 1",
     step1Desc: 'Mở TikTok, nhấn <strong class="text-white">Chia sẻ</strong> → <strong class="text-white">Sao chép liên kết</strong>',
@@ -131,20 +179,738 @@ const TRANSLATIONS = {
     errInvalid: "Link không hợp lệ. Hãy sao chép đúng đường dẫn từ app TikTok hoặc Douyin.",
     errServer: "Lỗi kết nối máy chủ. Vui lòng kiểm tra mạng và thử lại.",
     errGeneral: "Không thể xử lý video này. Hãy thử lại hoặc kiểm tra xem video có bị riêng tư không."
+  },
+  es: {
+    navHowTo: "Cómo usar",
+    navGuides: "Guías",
+    navFaq: "Preguntas",
+    heroBadge: "Gratis · Sin marca de agua · Ilimitado",
+    heroTitle: "Descargar Videos de TikTok",
+    heroTitleHighlight: "Sin Marca de Agua, Gratis",
+    heroSubtitle: "Compatible con TikTok y Douyin, calidad HD original, sin registro, sin aplicaciones.",
+    inputPlaceholder: "Pega el enlace de TikTok o Douyin aquí...",
+    btnDownload: "⬇ Descargar",
+    btnProcessing: "Procesando...",
+    adLabel: "PUBLICIDAD / PATROCINADO",
+    adTopNotice: "📢 Espacio disponible para anuncios · Contacto: ",
+    adResultNotice: "🌟 Espacio patrocinado · Escribir a ndtoanst2@gmail.com",
+    adBottomNotice: "📢 Publicidad de socios · Anúnciate aquí: ",
+    adSideNotice: "Banner Lateral 160×600",
+    btnNoWM: "Descargar Video HD (Sin Marca)",
+    btnMP3: "Descargar Audio MP3 (Sonido Original)",
+    directDisclaimer: "Los videos se descargan directamente de los servidores CDN de TikTok — TraTuiLoc no almacena nada.",
+    tryAgain: "← Descargar otro video",
+    modalTitle: "Preparando enlace de descarga...",
+    modalWait: "Conectando directamente con los servidores originales, espera un momento",
+    modalCounting: "El enlace estará listo en:",
+    modalAdHeading: "Espacio Publicitario Patrocinado",
+    modalAdText: "Zona de máxima interacción antes de descargar",
+    modalBtnDownload: "⬇ Haz clic aquí para Obtener el Archivo",
+    howToTitle: "¿Cómo descargar videos de TikTok sin marca de agua?",
+    step1Title: "Paso 1",
+    step1Desc: 'Abre TikTok, pulsa <strong class="text-white">Compartir</strong> → <strong class="text-white">Copiar enlace</strong>',
+    step2Title: "Paso 2",
+    step2Desc: 'Pega el enlace en el cuadro de búsqueda y haz clic en <strong class="text-white">Descargar</strong>',
+    step3Title: "Paso 3",
+    step3Desc: 'Elige <strong class="text-white">Descargar Video HD</strong> o <strong class="text-white">Descargar MP3</strong>',
+    guidesTitle: "Guías y Tutoriales",
+    guidesSubtitle: "Explora guías prácticas para descargar clips de TikTok en cualquier dispositivo",
+    guide1Title: "TikTok en iPhone",
+    guide1Desc: "Cómo guardar clips de TikTok sin marca directamente en el carrete de iPhone usando Safari.",
+    guide2Title: "TikTok en Android",
+    guide2Desc: "Tutorial para guardar videos Full HD en la galería de Samsung, Xiaomi y Oppo con total seguridad.",
+    guide3Title: "Extraer Sonido MP3",
+    guide3Desc: "Cómo extraer música y audio de fondo de TikTok para tonos de llamada o creación de videos.",
+    readMore: "Leer guía →",
+    faqTitle: "Preguntas Frecuentes",
+    faq1Q: "¿Descargar videos de TikTok es gratis?",
+    faq1A: "Sí, 100% gratuito con descargas ilimitadas y sin necesidad de registrarse.",
+    faq2Q: "¿Es compatible con Douyin (TikTok chino)?",
+    faq2A: "¡Sí! TraTuiLoc es totalmente compatible tanto con TikTok global como con Douyin.",
+    faq3Q: "¿Los videos descargados no tienen marca de agua?",
+    faq3A: "Sí. Obtenemos el flujo de video limpio original directamente de los servidores de ByteDance.",
+    faq4Q: "¿TraTuiLoc almacena mis videos descargados?",
+    faq4A: "No. TraTuiLoc no aloja ni guarda ningún video. Todo se transmite directamente a tu dispositivo.",
+    footerPrivacy: "Política de Privacidad",
+    footerTerms: "Términos de Servicio",
+    footerDmca: "DMCA",
+    footerDisclaimer: "© 2026 TraTuiLoc · tratuiloc.xyz · No afiliado a ByteDance, TikTok o Douyin. No almacenamos videos.",
+    errEmpty: "Pega un enlace de TikTok o Douyin en el cuadro de arriba.",
+    errInvalid: "Formato de enlace no válido. Copia una URL válida de TikTok o Douyin.",
+    errServer: "Error de conexión. Comprueba tu red e inténtalo de nuevo.",
+    errGeneral: "No se puede procesar este video. Asegúrate de que sea público e intenta de nuevo."
+  },
+  pt: {
+    navHowTo: "Como usar",
+    navGuides: "Tutoriais",
+    navFaq: "FAQ",
+    heroBadge: "Grátis · Sem marca d'água · Ilimitado",
+    heroTitle: "Baixar Vídeos do TikTok",
+    heroTitleHighlight: "Sem Marca d'Água, Grátis",
+    heroSubtitle: "Compatível com TikTok e Douyin, qualidade HD original, sem cadastro, sem aplicativo.",
+    inputPlaceholder: "Cole o link do TikTok ou Douyin aqui...",
+    btnDownload: "⬇ Baixar",
+    btnProcessing: "Processando...",
+    adLabel: "ANÚNCIO / PATROCINADO",
+    adTopNotice: "📢 Espaço disponível para anúncios de parceiros · Contato: ",
+    adResultNotice: "🌟 Espaço patrocinado · Contato: ndtoanst2@gmail.com",
+    adBottomNotice: "📢 Anúncio de parceiros · Patrocine aqui: ",
+    adSideNotice: "Banner Lateral 160×600",
+    btnNoWM: "Baixar Vídeo HD (Sem Marca)",
+    btnMP3: "Baixar Áudio MP3 (Som Original)",
+    directDisclaimer: "Os vídeos são baixados diretamente dos servidores do TikTok — TraTuiLoc não armazena dados.",
+    tryAgain: "← Baixar outro vídeo",
+    modalTitle: "Preparando seu download...",
+    modalWait: "Conectando diretamente aos servidores originais, aguarde um instante",
+    modalCounting: "Link de download pronto em:",
+    modalAdHeading: "Banner de Patrocinador",
+    modalAdText: "Área de maior interação antes do download",
+    modalBtnDownload: "⬇ Clique aqui para Baixar o Arquivo",
+    howToTitle: "Como baixar vídeo do TikTok sem marca d'água",
+    step1Title: "Passo 1",
+    step1Desc: 'Abra o TikTok, toque em <strong class="text-white">Compartilhar</strong> → <strong class="text-white">Copiar Link</strong>',
+    step2Title: "Passo 2",
+    step2Desc: 'Cole o link na caixa de busca acima e clique em <strong class="text-white">Baixar</strong>',
+    step3Title: "Passo 3",
+    step3Desc: 'Escolha <strong class="text-white">Baixar Vídeo HD</strong> ou <strong class="text-white">Baixar MP3</strong>',
+    guidesTitle: "Guias e Dicas",
+    guidesSubtitle: "Explore dicas úteis para salvar vídeos do TikTok em qualquer celular ou PC",
+    guide1Title: "TikTok no iPhone",
+    guide1Desc: "Como salvar vídeos do TikTok sem marca d'água direto na galeria do iPhone pelo Safari.",
+    guide2Title: "TikTok no Android",
+    guide2Desc: "Tutorial para salvar clipes em Full HD na galeria de aparelhos Samsung, Xiaomi e Motorola.",
+    guide3Title: "Extrair Áudio MP3",
+    guide3Desc: "Como extrair músicas e sons do TikTok para usar como toque de celular ou trilha sonora.",
+    readMore: "Ler guia →",
+    faqTitle: "Perguntas Frequentes",
+    faq1Q: "Baixar vídeos do TikTok é gratuito?",
+    faq1A: "Sim, 100% gratuito, com downloads ilimitados e sem necessidade de cadastro.",
+    faq2Q: "Suporta o Douyin (TikTok chinês)?",
+    faq2A: "Sim! O TraTuiLoc suporta perfeitamente o TikTok internacional e o Douyin chinês.",
+    faq3Q: "Os vídeos baixados realmente não têm marca d'água?",
+    faq3A: "Sim. Obtemos o fluxo de vídeo limpo original diretamente dos servidores da ByteDance.",
+    faq4Q: "O TraTuiLoc armazena meus vídeos baixados?",
+    faq4A: "Não. O TraTuiLoc não armazena nenhum vídeo. Todos os downloads vão direto para o seu dispositivo.",
+    footerPrivacy: "Política de Privacidade",
+    footerTerms: "Termos de Uso",
+    footerDmca: "DMCA",
+    footerDisclaimer: "© 2026 TraTuiLoc · tratuiloc.xyz · Não afiliado ao ByteDance, TikTok ou Douyin.",
+    errEmpty: "Por favor, cole um link do TikTok ou Douyin na caixa acima.",
+    errInvalid: "Formato de link inválido. Copie uma URL válida do TikTok ou Douyin.",
+    errServer: "Erro de conexão. Verifique sua internet e tente novamente.",
+    errGeneral: "Não foi possível processar este vídeo. Verifique se ele é público."
+  },
+  id: {
+    navHowTo: "Cara Pakai",
+    navGuides: "Panduan",
+    navFaq: "FAQ",
+    heroBadge: "Gratis · Tanpa Watermark · Tanpa Batas",
+    heroTitle: "Download Video TikTok",
+    heroTitleHighlight: "Tanpa Watermark, Gratis",
+    heroSubtitle: "Mendukung TikTok & Douyin, kualitas HD asli, tanpa daftar, tanpa instal aplikasi.",
+    inputPlaceholder: "Tempel tautan TikTok atau Douyin di sini...",
+    btnDownload: "⬇ Unduh",
+    btnProcessing: "Memproses...",
+    adLabel: "IKLAN / DISPONSORI",
+    adTopNotice: "📢 Ruang iklan & banner mitra tersedia · Hubungi: ",
+    adResultNotice: "🌟 Ruang Iklan Sponsor · Kontak ndtoanst2@gmail.com",
+    adBottomNotice: "📢 Iklan Mitra · Kerjasama banner: ",
+    adSideNotice: "Banner Samping 160×600",
+    btnNoWM: "Unduh Video HD (Tanpa Watermark)",
+    btnMP3: "Unduh Audio MP3 (Suara Asli)",
+    directDisclaimer: "Video diunduh langsung dari server CDN TikTok — TraTuiLoc tidak menyimpan data apapun.",
+    tryAgain: "← Unduh video lain",
+    modalTitle: "Menyiapkan tautan unduhan...",
+    modalWait: "Menghubungkan langsung ke server asli, harap tunggu sebentar",
+    modalCounting: "Tautan siap dalam:",
+    modalAdHeading: "Ruang Iklan Sponsor",
+    modalAdText: "Posisi interaksi tertinggi sebelum mengunduh file",
+    modalBtnDownload: "⬇ Klik di sini untuk Ambil File Sekarang",
+    howToTitle: "Cara download video TikTok tanpa watermark",
+    step1Title: "Langkah 1",
+    step1Desc: 'Buka TikTok, ketuk <strong class="text-white">Bagikan</strong> → <strong class="text-white">Salin Tautan</strong>',
+    step2Title: "Langkah 2",
+    step2Desc: 'Tempel tautan ke kotak pencarian di atas, klik <strong class="text-white">Unduh</strong>',
+    step3Title: "Langkah 3",
+    step3Desc: 'Pilih <strong class="text-white">Unduh Video HD</strong> atau <strong class="text-white">Unduh MP3</strong>',
+    guidesTitle: "Panduan & Tips",
+    guidesSubtitle: "Jelajahi panduan praktis untuk menyimpan video TikTok di semua perangkat",
+    guide1Title: "TikTok di iPhone",
+    guide1Desc: "Cara menyimpan video TikTok bersih logo langsung ke Galeri iPhone via Safari tanpa aplikasi.",
+    guide2Title: "TikTok di Android",
+    guide2Desc: "Tutorial menyimpan video Full HD ke Galeri Samsung, Xiaomi, Oppo dengan aman.",
+    guide3Title: "Ekstrak Suara MP3",
+    guide3Desc: "Cara mengambil musik latar TikTok untuk nada dering ponsel atau backsound video.",
+    readMore: "Baca panduan →",
+    faqTitle: "Pertanyaan yang Sering Diajukan",
+    faq1Q: "Apakah download video TikTok gratis?",
+    faq1A: "Ya, 100% gratis tanpa batas unduhan dan tanpa perlu membuat akun.",
+    faq2Q: "Apakah mendukung Douyin (TikTok China)?",
+    faq2A: "Ya! TraTuiLoc mendukung penuh TikTok internasional dan Douyin versi China.",
+    faq3Q: "Apakah video benar-benar bersih tanpa watermark?",
+    faq3A: "Ya. Kami mengambil link video asli langsung dari server ByteDance tanpa watermark.",
+    faq4Q: "Apakah TraTuiLoc menyimpan video saya?",
+    faq4A: "Tidak. TraTuiLoc tidak menyimpan video apapun. Semua unduhan langsung ke perangkat Anda.",
+    footerPrivacy: "Kebijakan Privasi",
+    footerTerms: "Ketentuan Layanan",
+    footerDmca: "DMCA",
+    footerDisclaimer: "© 2026 TraTuiLoc · tratuiloc.xyz · Tidak berafiliasi dengan ByteDance, TikTok, atau Douyin.",
+    errEmpty: "Silakan tempel tautan TikTok atau Douyin di kotak atas.",
+    errInvalid: "Format tautan tidak valid. Harap salin tautan TikTok atau Douyin yang benar.",
+    errServer: "Kesalahan koneksi server. Silakan periksa jaringan dan coba lagi.",
+    errGeneral: "Tidak dapat memproses video ini. Pastikan video bersifat publik."
+  },
+  fr: {
+    navHowTo: "Comment faire",
+    navGuides: "Guides",
+    navFaq: "FAQ",
+    heroBadge: "Gratuit · Sans filigrane · Illimité",
+    heroTitle: "Télécharger Vidéos TikTok",
+    heroTitleHighlight: "Sans Filigrane, Gratuit",
+    heroSubtitle: "Prend en charge TikTok et Douyin, qualité HD d'origine, sans inscription.",
+    inputPlaceholder: "Collez le lien TikTok ou Douyin ici...",
+    btnDownload: "⬇ Télécharger",
+    btnProcessing: "Traitement...",
+    adLabel: "PUBLICITÉ / SPONSORISÉ",
+    adTopNotice: "📢 Espace disponible pour bannières publicitaires · Contact: ",
+    adResultNotice: "🌟 Espace sponsorisé · Contact: ndtoanst2@gmail.com",
+    adBottomNotice: "📢 Publicité partenaire · Partenariat: ",
+    adSideNotice: "Bannière Latérale 160×600",
+    btnNoWM: "Télécharger Vidéo HD (Sans Filigrane)",
+    btnMP3: "Télécharger Audio MP3 (Son Original)",
+    directDisclaimer: "Les vidéos sont téléchargées directement depuis les serveurs CDN de TikTok — TraTuiLoc ne stocke rien.",
+    tryAgain: "← Télécharger une autre vidéo",
+    modalTitle: "Préparation de votre téléchargement...",
+    modalWait: "Connexion directe aux serveurs d'origine, veuillez patienter un instant",
+    modalCounting: "Lien prêt dans:",
+    modalAdHeading: "Espace Publicitaire Partenaire",
+    modalAdText: "Zone à forte visibilité avant téléchargement",
+    modalBtnDownload: "⬇ Cliquez ici pour Obtenir le Fichier",
+    howToTitle: "Comment télécharger une vidéo TikTok sans filigrane",
+    step1Title: "Étape 1",
+    step1Desc: 'Ouvrez TikTok, appuyez sur <strong class="text-white">Partager</strong> → <strong class="text-white">Copier le lien</strong>',
+    step2Title: "Étape 2",
+    step2Desc: 'Collez le lien dans la boîte de recherche et cliquez sur <strong class="text-white">Télécharger</strong>',
+    step3Title: "Étape 3",
+    step3Desc: 'Choisissez <strong class="text-white">Télécharger Vidéo HD</strong> ou <strong class="text-white">Télécharger MP3</strong>',
+    guidesTitle: "Guides & Tutoriels",
+    guidesSubtitle: "Découvrez des guides pratiques pour enregistrer des vidéos TikTok sur tous vos appareils",
+    guide1Title: "TikTok sur iPhone",
+    guide1Desc: "Comment enregistrer des vidéos TikTok sans filigrane sur pellicule iPhone avec Safari.",
+    guide2Title: "TikTok sur Android",
+    guide2Desc: "Guide pour enregistrer des clips Full HD dans la galerie Samsung, Xiaomi ou Oppo sans risque.",
+    guide3Title: "Extraire le Son MP3",
+    guide3Desc: "Comment extraire les sons et musiques de fond de TikTok pour vos sonneries de téléphone.",
+    readMore: "Lire le guide →",
+    faqTitle: "Questions Fréquemment Posées",
+    faq1Q: "Le téléchargement de vidéos TikTok est-il gratuit ?",
+    faq1A: "Oui, 100% gratuit avec téléchargements illimités et sans inscription requise.",
+    faq2Q: "Prend-il en charge Douyin (TikTok chinois) ?",
+    faq2A: "Oui ! TraTuiLoc prend en charge TikTok international et Douyin chinois.",
+    faq3Q: "Les vidéos téléchargées sont-elles sans filigrane ?",
+    faq3A: "Oui, nous récupérons le flux vidéo original directement auprès des serveurs ByteDance.",
+    faq4Q: "TraTuiLoc stocke-t-il mes vidéos ?",
+    faq4A: "Non. TraTuiLoc ne stocke aucune vidéo. Tout est transmis directement à votre appareil.",
+    footerPrivacy: "Politique de Confidentialité",
+    footerTerms: "Conditions d'Utilisation",
+    footerDmca: "DMCA",
+    footerDisclaimer: "© 2026 TraTuiLoc · tratuiloc.xyz · Non affilié à ByteDance, TikTok ou Douyin.",
+    errEmpty: "Veuillez coller un lien TikTok ou Douyin dans le champ ci-dessus.",
+    errInvalid: "Format de lien invalide. Veuillez copier une URL valide.",
+    errServer: "Erreur de connexion au serveur. Vérifiez votre réseau et réessayez.",
+    errGeneral: "Impossible de traiter cette vidéo. Vérifiez qu'elle est bien publique."
+  },
+  de: {
+    navHowTo: "Anleitung",
+    navGuides: "Ratgeber",
+    navFaq: "FAQ",
+    heroBadge: "Kostenlos · Ohne Wasserzeichen · Unbegrenzt",
+    heroTitle: "TikTok Videos Herunterladen",
+    heroTitleHighlight: "Ohne Wasserzeichen, Kostenlos",
+    heroSubtitle: "Unterstützt TikTok & Douyin, originale HD-Qualität, keine Registrierung, keine App nötig.",
+    inputPlaceholder: "TikTok- oder Douyin-Link hier einfügen...",
+    btnDownload: "⬇ Herunterladen",
+    btnProcessing: "Wird verarbeitet...",
+    adLabel: "WERBUNG / GESPONSERT",
+    adTopNotice: "📢 Bannerwerbung & Sponsoring verfügbar · Kontakt: ",
+    adResultNotice: "🌟 Werbeplatz · Kontakt: ndtoanst2@gmail.com",
+    adBottomNotice: "📢 Partnerwerbung · Banner-Sponsoring: ",
+    adSideNotice: "Seitenbanner 160×600",
+    btnNoWM: "HD-Video herunterladen (Ohne Wasserzeichen)",
+    btnMP3: "MP3-Audio herunterladen (Originalton)",
+    directDisclaimer: "Videos werden direkt von den TikTok/Douyin CDN-Servern gestreamt — TraTuiLoc speichert 0 Bytes.",
+    tryAgain: "← Ein anderes Video herunterladen",
+    modalTitle: "Download wird vorbereitet...",
+    modalWait: "Verbindung zu den Originalservern wird hergestellt, bitte einen Moment Geduld",
+    modalCounting: "Downloadlink bereit in:",
+    modalAdHeading: "Gesponserter Werbeplatz",
+    modalAdText: "Höchste Aufmerksamkeit vor dem Dateidownload",
+    modalBtnDownload: "⬇ Hier klicken, um die Datei zu erhalten",
+    howToTitle: "So laden Sie TikTok-Videos ohne Wasserzeichen herunter",
+    step1Title: "Schritt 1",
+    step1Desc: 'Öffnen Sie TikTok, tippen Sie auf <strong class="text-white">Teilen</strong> → <strong class="text-white">Link kopieren</strong>',
+    step2Title: "Schritt 2",
+    step2Desc: 'Fügen Sie den Link in das Suchfeld oben ein und klicken Sie auf <strong class="text-white">Herunterladen</strong>',
+    step3Title: "Schritt 3",
+    step3Desc: 'Wählen Sie <strong class="text-white">HD-Video herunterladen</strong> oder <strong class="text-white">MP3 herunterladen</strong>',
+    guidesTitle: "Anleitungen & Tipps",
+    guidesSubtitle: "Erfahren Sie, wie Sie TikTok-Clips auf jedem Gerät ohne Wasserzeichen speichern",
+    guide1Title: "TikTok auf dem iPhone",
+    guide1Desc: "TikTok-Videos ohne Logo direkt in die iPhone-Fotomediathek über Safari speichern.",
+    guide2Title: "TikTok auf Android",
+    guide2Desc: "Anleitung zum Speichern von Full-HD-Clips in der Galerie von Samsung, Xiaomi und Oppo.",
+    guide3Title: "MP3-Ton extrahieren",
+    guide3Desc: "Hintergrundmusik und Sounds aus TikTok für Klingeltöne oder Videoschnitt extrahieren.",
+    readMore: "Anleitung lesen →",
+    faqTitle: "Häufig gestellte Fragen",
+    faq1Q: "Ist das Herunterladen von TikTok-Videos kostenlos?",
+    faq1A: "Ja, 100% kostenlos mit unbegrenzten Downloads und ohne Registrierung.",
+    faq2Q: "Wird Douyin (chinesisches TikTok) unterstützt?",
+    faq2A: "Ja! TraTuiLoc unterstützt sowohl internationales TikTok als auch chinesisches Douyin.",
+    faq3Q: "Sind die Videos wirklich ohne Wasserzeichen?",
+    faq3A: "Ja, wir rufen den sauberen Originalvideostream direkt von ByteDance-Servern ab.",
+    faq4Q: "Speichert TraTuiLoc meine heruntergeladenen Videos?",
+    faq4A: "Nein. TraTuiLoc speichert keine Videos. Alle Downloads laufen direkt auf Ihr Gerät.",
+    footerPrivacy: "Datenschutzerklärung",
+    footerTerms: "Nutzungsbedingungen",
+    footerDmca: "DMCA",
+    footerDisclaimer: "© 2026 TraTuiLoc · tratuiloc.xyz · Nicht verbunden mit ByteDance, TikTok oder Douyin.",
+    errEmpty: "Bitte fügen Sie oben einen TikTok- oder Douyin-Link ein.",
+    errInvalid: "Ungültiges Linkformat. Bitte kopieren Sie eine gültige URL.",
+    errServer: "Verbindungsfehler. Bitte überprüfen Sie Ihr Netzwerk und versuchen Sie es erneut.",
+    errGeneral: "Dieses Video kann nicht verarbeitet werden. Bitte stellen Sie sicher, dass es öffentlich ist."
+  },
+  ja: {
+    navHowTo: "使い方",
+    navGuides: "ガイド",
+    navFaq: "よくある質問",
+    heroBadge: "完全無料 · 透かしなし · 無制限",
+    heroTitle: "TikTok動画保存",
+    heroTitleHighlight: "透かしなし・無料",
+    heroSubtitle: "TikTok & Douyin対応、オリジナルHD高画質、登録不要、アプリ不要。",
+    inputPlaceholder: "TikTokまたはDouyinのリンクをここに貼り付け...",
+    btnDownload: "⬇ ダウンロード",
+    btnProcessing: "処理中...",
+    adLabel: "広告 / スポンサー",
+    adTopNotice: "📢 バナー広告枠・スポンサー募集中 · お問い合わせ: ",
+    adResultNotice: "🌟 スポンサー広告枠 · 連絡先 ndtoanst2@gmail.com",
+    adBottomNotice: "📢 パートナー広告 · バナー掲載: ",
+    adSideNotice: "サイドバナー 160×600",
+    btnNoWM: "HD動画ダウンロード（ロゴなし）",
+    btnMP3: "MP3音声をダウンロード（原音質）",
+    directDisclaimer: "動画はTikTok/DouyinのCDNから直接ダウンロードされます。TraTuiLocは動画を保存しません。",
+    tryAgain: "← 別の動画をダウンロード",
+    modalTitle: "ダウンロードリンクを準備中...",
+    modalWait: "元のサーバーに直接接続しています。少々お待ちください",
+    modalCounting: "リンク準備完了まであと:",
+    modalAdHeading: "スポンサー広告エリア",
+    modalAdText: "ダウンロード直前の高注目度バナースペース",
+    modalBtnDownload: "⬇ ここをクリックしてファイルを保存",
+    howToTitle: "TikTok動画をロゴなしで保存する方法",
+    step1Title: "ステップ 1",
+    step1Desc: 'TikTokを開き、<strong class="text-white">共有</strong> → <strong class="text-white">リンクをコピー</strong>をタップ',
+    step2Title: "ステップ 2",
+    step2Desc: '上の入力ボックスにリンクを貼り付け、<strong class="text-white">ダウンロード</strong>をクリック',
+    step3Title: "ステップ 3",
+    step3Desc: '<strong class="text-white">HD動画ダウンロード</strong>または<strong class="text-white">MP3ダウンロード</strong>を選択',
+    guidesTitle: "ガイド＆便利な使い方",
+    guidesSubtitle: "各デバイスでのTikTok動画保存テクニックをご紹介",
+    guide1Title: "iPhoneでTikTok保存",
+    guide1Desc: "アプリを使わずにSafari経由でiPhoneの写真アプリにロゴなし動画を保存する方法。",
+    guide2Title: "AndroidでTikTok保存",
+    guide2Desc: "Galaxy、Xiaomi、AQUOSのギャラリーにフルHD動画を安全に直接保存する手順。",
+    guide3Title: "MP3音声を抽出",
+    guide3Desc: "TikTokのBGMや流行りのサウンドを着信音や動画編集用に高音質で抽出する方法。",
+    readMore: "詳しく見る →",
+    faqTitle: "よくあるご質問",
+    faq1Q: "TikTok動画のダウンロードは無料ですか？",
+    faq1A: "はい、回数無制限で完全無料です。会員登録も一切必要ありません。",
+    faq2Q: "中国版TikTok（Douyin / 抖音）にも対応していますか？",
+    faq2A: "はい！国際版TikTokおよび中国版Douyinの両方に完全対応しています。",
+    faq3Q: "本当に透かしロゴは入りませんか？",
+    faq3A: "はい。ByteDanceサーバーから直接元のクリーンな動画ストリームを取得します。",
+    faq4Q: "TraTuiLocはユーザーの動画を保存しますか？",
+    faq4A: "いいえ。当サイトはお客様の動画を一切サーバーに保存しません。",
+    footerPrivacy: "プライバシーポリシー",
+    footerTerms: "利用規約",
+    footerDmca: "DMCA",
+    footerDisclaimer: "© 2026 TraTuiLoc · tratuiloc.xyz · ByteDance、TikTok、Douyinとは提携していません。",
+    errEmpty: "上の入力欄にTikTokまたはDouyinのリンクを貼り付けてください。",
+    errInvalid: "無効なURL形式です。正しいTikTokリンクをコピーしてください。",
+    errServer: "サーバー接続エラーです。通信状態を確認して再試行してください。",
+    errGeneral: "この動画を処理できませんでした。動画が公開設定になっているか確認してください。"
+  },
+  ko: {
+    navHowTo: "이용 방법",
+    navGuides: "가이드",
+    navFaq: "FAQ",
+    heroBadge: "무료 · 워터마크 없음 · 무제한",
+    heroTitle: "틱톡 동영상 다운로드",
+    heroTitleHighlight: "워터마크 없음, 무료",
+    heroSubtitle: "틱톡 및 Douyin 지원, 원본 HD 화질, 회원가입 없음, 앱 설치 불필요.",
+    inputPlaceholder: "틱톡 또는 Douyin 링크를 여기에 붙여넣기...",
+    btnDownload: "⬇ 다운로드",
+    btnProcessing: "처리 중...",
+    adLabel: "광고 / 스폰서",
+    adTopNotice: "📢 배너 광고 및 스폰서 제휴 문의: ",
+    adResultNotice: "🌟 스폰서 광고 공간 · 문의: ndtoanst2@gmail.com",
+    adBottomNotice: "📢 파트너 광고 · 배너 제휴: ",
+    adSideNotice: "사이드 배너 160×600",
+    btnNoWM: "HD 동영상 다운로드 (워터마크 없음)",
+    btnMP3: "MP3 음원 다운로드 (원본 사운드)",
+    directDisclaimer: "동영상은 틱톡/Douyin 서버에서 직접 전송되며 TraTuiLoc은 파일을 저장하지 않습니다.",
+    tryAgain: "← 다른 동영상 다운로드",
+    modalTitle: "다운로드 링크 준비 중...",
+    modalWait: "원본 서버에 직접 연결 중입니다. 잠시만 기다려주세요",
+    modalCounting: "링크 준비 완료까지:",
+    modalAdHeading: "스폰서 파트너 광고",
+    modalAdText: "다운로드 직전 가장 주목도 높은 배너 영역",
+    modalBtnDownload: "⬇ 여기를 클릭하여 파일 받기",
+    howToTitle: "워터마크 없이 틱톡 동영상 저장하는 법",
+    step1Title: "1단계",
+    step1Desc: '틱톡에서 <strong class="text-white">공유</strong> → <strong class="text-white">링크 복사</strong> 클릭',
+    step2Title: "2단계",
+    step2Desc: '상단 입력창에 링크를 붙여넣고 <strong class="text-white">다운로드</strong> 클릭',
+    step3Title: "3단계",
+    step3Desc: '<strong class="text-white">HD 동영상 다운로드</strong> 또는 <strong class="text-white">MP3 다운로드</strong> 선택',
+    guidesTitle: "가이드 및 활용 팁",
+    guidesSubtitle: "다양한 기기에서 워터마크 없이 틱톡 영상을 다운로드하는 팁",
+    guide1Title: "아이폰에서 틱톡 저장",
+    guide1Desc: "별도 앱 없이 사파리 브라우저로 아이폰 사진 보관함에 깔끔하게 저장하는 법.",
+    guide2Title: "안드로이드에서 틱톡 저장",
+    guide2Desc: "갤럭시, 샤오미 갤러리에 원본 풀HD 화질로 안전하게 동영상을 저장하는 방법.",
+    guide3Title: "MP3 음원 추출",
+    guide3Desc: "틱톡 배경음악 및 사운드를 벨소리나 영상 편집용 고음질 MP3로 추출하기.",
+    readMore: "가이드 읽기 →",
+    faqTitle: "자주 묻는 질문",
+    faq1Q: "틱톡 동영상 다운로드는 무료인가요?",
+    faq1A: "네, 무제한 다운로드가 100% 무료이며 회원가입도 필요하지 않습니다.",
+    faq2Q: "중국판 틱톡(Douyin)도 지원하나요?",
+    faq2A: "네! TraTuiLoc은 글로벌 틱톡과 중국 Douyin을 완벽하게 지원합니다.",
+    faq3Q: "다운로드한 영상에 정말 로고가 없나요?",
+    faq3A: "네. 바이트댄스 서버에서 직접 원본 클린 비디오 스트림을 가져옵니다.",
+    faq4Q: "TraTuiLoc에 영상이 저장되나요?",
+    faq4A: "아니요. TraTuiLoc은 어떠한 영상도 저장하지 않습니다.",
+    footerPrivacy: "개인정보처리방침",
+    footerTerms: "이용약관",
+    footerDmca: "DMCA",
+    footerDisclaimer: "© 2026 TraTuiLoc · tratuiloc.xyz · ByteDance, TikTok, Douyin과 제휴되지 않았습니다.",
+    errEmpty: "상단 입력창에 틱톡 또는 Douyin 링크를 붙여넣으세요.",
+    errInvalid: "유효하지 않은 링크 형식입니다. 올바른 URL을 복사해주세요.",
+    errServer: "서버 연결 오류입니다. 네트워크 상태를 확인하고 다시 시도하세요.",
+    errGeneral: "이 동영상을 처리할 수 없습니다. 동영상이 공개 상태인지 확인하세요."
+  },
+  ru: {
+    navHowTo: "Инструкция",
+    navGuides: "Гайды",
+    navFaq: "ЧаВо",
+    heroBadge: "Бесплатно · Без водяного знака · Безлимитно",
+    heroTitle: "Скачать видео с Тик Ток",
+    heroTitleHighlight: "Без водяного знака, бесплатно",
+    heroSubtitle: "Поддержка TikTok и Douyin, оригинальное HD качество, без регистрации.",
+    inputPlaceholder: "Вставьте ссылку на TikTok или Douyin сюда...",
+    btnDownload: "⬇ Скачать",
+    btnProcessing: "Обработка...",
+    adLabel: "РЕКЛАМА / СПОНСОР",
+    adTopNotice: "📢 Свободное место для баннерной рекламы · Контакты: ",
+    adResultNotice: "🌟 Спонсорское место · Контакт: ndtoanst2@gmail.com",
+    adBottomNotice: "📢 Реклама партнеров · Спонсорство баннеров: ",
+    adSideNotice: "Боковой баннер 160×600",
+    btnNoWM: "Скачать HD видео (Без водяного знака)",
+    btnMP3: "Скачать аудио MP3 (Оригинальный звук)",
+    directDisclaimer: "Видео загружаются напрямую с серверов TikTok — TraTuiLoc ничего не хранит.",
+    tryAgain: "← Скачать другое видео",
+    modalTitle: "Подготовка ссылки на скачивание...",
+    modalWait: "Прямое подключение к серверам источника, пожалуйста подождите",
+    modalCounting: "Ссылка будет готова через:",
+    modalAdHeading: "Спонсорская Реклама",
+    modalAdText: "Зона максимального внимания перед загрузкой файла",
+    modalBtnDownload: "⬇ Нажмите здесь, чтобы Получить Файл",
+    howToTitle: "Как скачать видео из Тик Ток без водяного знака",
+    step1Title: "Шаг 1",
+    step1Desc: 'Откройте Тик Ток, нажмите <strong class="text-white">Поделиться</strong> → <strong class="text-white">Копировать ссылку</strong>',
+    step2Title: "Шаг 2",
+    step2Desc: 'Вставьте ссылку в поле поиска выше и нажмите <strong class="text-white">Скачать</strong>',
+    step3Title: "Шаг 3",
+    step3Desc: 'Выберите <strong class="text-white">Скачать HD видео</strong> или <strong class="text-white">Скачать MP3</strong>',
+    guidesTitle: "Инструкции и Советы",
+    guidesSubtitle: "Полезные руководства по скачиванию видео из TikTok на любые устройства",
+    guide1Title: "TikTok на iPhone",
+    guide1Desc: "Как сохранять видео из TikTok без водяного знака прямо в галерею iPhone через Safari.",
+    guide2Title: "TikTok на Android",
+    guide2Desc: "Инструкция по сохранению Full HD роликов в галерею Samsung, Xiaomi и других Android без вирусов.",
+    guide3Title: "Извлечь MP3 трек",
+    guide3Desc: "Как извлечь фоновую музыку из видео TikTok в высоком качестве для рингтона или монтажа.",
+    readMore: "Читать руководство →",
+    faqTitle: "Часто Задаваемые Вопросы",
+    faq1Q: "Скачивание видео из TikTok бесплатное?",
+    faq1A: "Да, абсолютно бесплатно и без ограничений по количеству скачиваний.",
+    faq2Q: "Поддерживается ли Douyin (китайский TikTok)?",
+    faq2A: "Да! TraTuiLoc полностью поддерживает как международный TikTok, так и китайский Douyin.",
+    faq3Q: "Видео действительно скачивается без водяного знака?",
+    faq3A: "Да. Мы запрашиваем исходный чистый видеопоток напрямую с серверов ByteDance.",
+    faq4Q: "Сохраняет ли TraTuiLoc мои видео?",
+    faq4A: "Нет. TraTuiLoc не хранит видео. Все файлы скачиваются напрямую на ваше устройство.",
+    footerPrivacy: "Политика конфиденциальности",
+    footerTerms: "Условия обслуживания",
+    footerDmca: "DMCA",
+    footerDisclaimer: "© 2026 TraTuiLoc · tratuiloc.xyz · Не связано с ByteDance, TikTok или Douyin.",
+    errEmpty: "Пожалуйста, вставьте ссылку на TikTok или Douyin в поле выше.",
+    errInvalid: "Неверный формат ссылки. Скопируйте правильный адрес видео.",
+    errServer: "Ошибка подключения. Проверьте интернет и повторите попытку.",
+    errGeneral: "Не удалось обработать видео. Убедитесь, что оно общедоступно."
+  },
+  ar: {
+    navHowTo: "طريقة الاستخدام",
+    navGuides: "الدليل",
+    navFaq: "الأسئلة الشائعة",
+    heroBadge: "مجاني · بدون علامة مائية · غير محدود",
+    heroTitle: "تحميل فيديوهات تيك توك",
+    heroTitleHighlight: "بدون علامة مائية، مجاناً",
+    heroSubtitle: "يدعم تيك توك و Douyin، بجودة HD الأصلية، بدون تسجيل، بدون تطبيقات.",
+    inputPlaceholder: "الصق رابط تيك توك أو Douyin هنا...",
+    btnDownload: "⬇ تحميل",
+    btnProcessing: "جاري المعالجة...",
+    adLabel: "إعلان / برعاية",
+    adTopNotice: "📢 مساحة إعلانية متاحة للرعاة · تواصل معنا: ",
+    adResultNotice: "🌟 مساحة إعلانية برعاية · ndtoanst2@gmail.com",
+    adBottomNotice: "📢 إعلان الشركاء · رعاية البانر: ",
+    adSideNotice: "بانر جانبي 160×600",
+    btnNoWM: "تحميل فيديو HD (بدون علامة مائية)",
+    btnMP3: "تحميل صوت MP3 (الصوت الأصلي)",
+    directDisclaimer: "يتم تنزيل الفيديوهات مباشرة من خوادم تيك توك — TraTuiLoc لا يخزن أي ملفات.",
+    tryAgain: "← تحميل فيديو آخر",
+    modalTitle: "جاري تجهيز رابط التنزيل...",
+    modalWait: "الاتصال المباشر بالخوادم الأصلية، يُرجى الانتظار لحظات",
+    modalCounting: "الرابط سيكون جاهزاً خلال:",
+    modalAdHeading: "مساحة إعلانية برعاية",
+    modalAdText: "أعلى منطقة تفاعل قبل تنزيل الملف",
+    modalBtnDownload: "⬇ انقر هنا للحصول على الملف الآن",
+    howToTitle: "كيفية تحميل فيديو تيك توك بدون علامة مائية",
+    step1Title: "الخطوة 1",
+    step1Desc: 'افتح تيك توك، اضغط على <strong class="text-white">مشاركة</strong> ← <strong class="text-white">نسخ الرابط</strong>',
+    step2Title: "الخطوة 2",
+    step2Desc: 'الصق الرابط في مربع البحث أعلاه واضغط على <strong class="text-white">تحميل</strong>',
+    step3Title: "الخطوة 3",
+    step3Desc: 'اختر <strong class="text-white">تحميل فيديو HD</strong> أو <strong class="text-white">تحميل MP3</strong>',
+    guidesTitle: "أدلة وشروحات",
+    guidesSubtitle: "استكشف أدلة مفيدة لتنزيل مقاطع تيك توك على جميع أجهزتك",
+    guide1Title: "تيك توك على آيفون",
+    guide1Desc: "طريقة حفظ فيديوهات تيك توك بدون علامة مائية مباشرة في ألبوم صور آيفون عبر سفاري.",
+    guide2Title: "تيك توك على أندرويد",
+    guide2Desc: "شرح حفظ المقاطع بدقة Full HD في استوديو سامسونج وشاومي بأمان تام.",
+    guide3Title: "استخراج صوت MP3",
+    guide3Desc: "طريقة استخراج الموسيقى والصوت من تيك توك لاستخدامها كنغمات أو في المونتاج.",
+    readMore: "قراءة الدليل ←",
+    faqTitle: "الأسئلة الأكثر تكراراً",
+    faq1Q: "هل تنزيل الفيديوهات مجاني؟",
+    faq1A: "نعم، مجاني 100% بدون حدود لعدد التنزيلات وبدون الحاجة لإنشاء حساب.",
+    faq2Q: "هل يدعم التطبيق الصيني Douyin؟",
+    faq2A: "نعم! يدعم TraTuiLoc كلاً من تيك توك العالمي و Douyin الصيني بالكامل.",
+    faq3Q: "هل الفيديوهات المنزلة بدون علامة مائية فعلاً؟",
+    faq3A: "نعم، نحصل على تدفق الفيديو الأصلي النظيف مباشرة من خوادم ByteDance.",
+    faq4Q: "هل يقوم TraTuiLoc بتخزين فيديوهاتي؟",
+    faq4A: "لا، الموقع لا يستضيف ولا يخزن أي فيديوهات على خوادمه.",
+    footerPrivacy: "سياسة الخصوصية",
+    footerTerms: "شروط الخدمة",
+    footerDmca: "DMCA",
+    footerDisclaimer: "© 2026 TraTuiLoc · tratuiloc.xyz · غير تابع لشركة ByteDance أو TikTok.",
+    errEmpty: "يُرجى لصق رابط تيك توك أو Douyin في المربع أعلاه.",
+    errInvalid: "صيغة الرابط غير صحيحة. يُرجى نسخ رابط تيك توك سليم.",
+    errServer: "خطأ في الاتصال بالخادم. يُرجى التحقق من الشبكة وإعادة المحاولة.",
+    errGeneral: "تعذر معالجة هذا الفيديو. يُرجى التأكد من أن الفيديو عام."
+  },
+  th: {
+    navHowTo: "วิธีใช้งาน",
+    navGuides: "คู่มือ",
+    navFaq: "คำถามพบบ่อย",
+    heroBadge: "ฟรี · ไม่มีลายน้ำ · ไม่จำกัด",
+    heroTitle: "ดาวน์โหลดวิดีโอ TikTok",
+    heroTitleHighlight: "ไม่มีลายน้ำ ฟรี",
+    heroSubtitle: "รองรับทั้ง TikTok และ Douyin คุณภาพ HD ดั้งเดิม ไม่ต้องลงทะเบียน ไม่ต้องโหลดแอป",
+    inputPlaceholder: "วางลิงก์ TikTok หรือ Douyin ที่นี่...",
+    btnDownload: "⬇ ดาวน์โหลด",
+    btnProcessing: "กำลังประมวลผล...",
+    adLabel: "โฆษณา / สปอนเซอร์",
+    adTopNotice: "📢 พื้นที่แบนเนอร์โฆษณาสำหรับผู้สนับสนุน · ติดต่อ: ",
+    adResultNotice: "🌟 พื้นที่โฆษณาสปอนเซอร์ · ติดต่อ ndtoanst2@gmail.com",
+    adBottomNotice: "📢 โฆษณาพาร์ทเนอร์ · สปอนเซอร์แบนเนอร์: ",
+    adSideNotice: "แบนเนอร์ข้าง 160×600",
+    btnNoWM: "ดาวน์โหลดวิดีโอ HD (ไม่มีลายน้ำ)",
+    btnMP3: "ดาวน์โหลดเสียง MP3 (เสียงต้นฉบับ)",
+    directDisclaimer: "วิดีโอถูกดาวน์โหลดโดยตรงจากเซิร์ฟเวอร์ TikTok — TraTuiLoc ไม่จัดเก็บข้อมูลใดๆ",
+    tryAgain: "← ดาวน์โหลดวิดีโออื่น",
+    modalTitle: "กำลังเตรียมลิงก์ดาวน์โหลด...",
+    modalWait: "กำลังเชื่อมต่อโดยตรงกับเซิร์ฟเวอร์ต้นฉบับ โปรดรอสักครู่",
+    modalCounting: "ลิงก์จะพร้อมใช้งานใน:",
+    modalAdHeading: "พื้นที่แบนเนอร์สปอนเซอร์",
+    modalAdText: "ตำแหน่งที่ได้รับความสนใจสูงสุดก่อนดาวน์โหลดไฟล์",
+    modalBtnDownload: "⬇ คลิกที่นี่เพื่อรับไฟล์ทันที",
+    howToTitle: "วิธีดาวน์โหลดวิดีโอ TikTok แบบไม่มีลายน้ำ",
+    step1Title: "ขั้นตอนที่ 1",
+    step1Desc: 'เปิด TikTok แตะที่ <strong class="text-white">แชร์</strong> → <strong class="text-white">คัดลอกลิงก์</strong>',
+    step2Title: "ขั้นตอนที่ 2",
+    step2Desc: 'วางลิงก์ลงในช่องค้นหาด้านบน แล้วกดปุ่ม <strong class="text-white">ดาวน์โหลด</strong>',
+    step3Title: "ขั้นตอนที่ 3",
+    step3Desc: 'เลือก <strong class="text-white">ดาวน์โหลดวิดีโอ HD</strong> หรือ <strong class="text-white">ดาวน์โหลด MP3</strong>',
+    guidesTitle: "คู่มือและเคล็ดลับ",
+    guidesSubtitle: "เทคนิคการบันทึกวิดีโอ TikTok สำหรับสมาร์ทโฟนและคอมพิวเตอร์",
+    guide1Title: "TikTok บน iPhone",
+    guide1Desc: "วิธีบันทึกวิดีโอ TikTok ลงอัลบั้มรูปบน iPhone ผ่าน Safari โดยไม่ต้องติดตั้งแอปเพิ่ม",
+    guide2Title: "TikTok บน Android",
+    guide2Desc: "วิธีบันทึกคลิป Full HD ลงแกลเลอรีบน Samsung, Xiaomi, Oppo อย่างปลอดภัย",
+    guide3Title: "แยกเสียงเพลง MP3",
+    guide3Desc: "วิธีดึงเสียงเพลงประกอบจาก TikTok เพื่อนำไปทำเสียงเรียกเข้าหรือตัดต่อคลิป",
+    readMore: "อ่านคู่มือ →",
+    faqTitle: "คำถามที่พบบ่อย",
+    faq1Q: "ดาวน์โหลดวิดีโอ TikTok ฟรีหรือไม่?",
+    faq1A: "ฟรี 100% ไม่จำกัดจำนวนครั้ง และไม่ต้องสมัครสมาชิก",
+    faq2Q: "รองรับ Douyin (TikTok เวอร์ชันจีน) หรือไม่?",
+    faq2A: "รองรับอย่างสมบูรณ์แบบ ทั้ง TikTok สากลและ Douyin จีน",
+    faq3Q: "วิดีโอที่โหลดไม่มีลายน้ำจริงไหม?",
+    faq3A: "จริง เราดึงไฟล์วิดีโอต้นฉบับที่คมชัดตรงจากเซิร์ฟเวอร์ ByteDance",
+    faq4Q: "TraTuiLoc บันทึกวิดีโอของฉันไว้หรือไม่?",
+    faq4A: "ไม่ TraTuiLoc ไม่จัดเก็บวิดีโอใดๆ ไฟล์จะถูกส่งตรงไปยังเครื่องของคุณ",
+    footerPrivacy: "นโยบายความเป็นส่วนตัว",
+    footerTerms: "ข้อกำหนดการใช้งาน",
+    footerDmca: "DMCA",
+    footerDisclaimer: "© 2026 TraTuiLoc · tratuiloc.xyz · ไม่มีความเกี่ยวข้องกับ ByteDance หรือ TikTok",
+    errEmpty: "โปรดวางลิงก์ TikTok หรือ Douyin ในช่องด้านบน",
+    errInvalid: "รูปแบบลิงก์ไม่ถูกต้อง โปรดคัดลอก URL ของ TikTok ที่ถูกต้อง",
+    errServer: "เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์ โปรดลองใหม่อีกครั้ง",
+    errGeneral: "ไม่สามารถประมวลผลวิดีโอนี้ได้ โปรดตรวจสอบว่าเป็นวิดีโอสาธารณะ"
+  },
+  zh: {
+    navHowTo: "使用教程",
+    navGuides: "精选攻略",
+    navFaq: "常见问题",
+    heroBadge: "完全免费 · 无水印 · 无限下载",
+    heroTitle: "下载抖音 / TikTok 视频",
+    heroTitleHighlight: "超清无水印 · 完全免费",
+    heroSubtitle: "全面支持国际版 TikTok 与国内版抖音，原生 HD 画质，无需注册，无需安装软件。",
+    inputPlaceholder: "在此粘贴 TikTok 或抖音视频链接...",
+    btnDownload: "⬇ 立即下载",
+    btnProcessing: "正在解析中...",
+    adLabel: "广告 / 赞助合作",
+    adTopNotice: "📢 赞助广告位虚位以待 · 商务合作：",
+    adResultNotice: "🌟 赞助商广告位 · 合作咨询：ndtoanst2@gmail.com",
+    adBottomNotice: "📢 合作伙伴广告 · 广告横幅位：",
+    adSideNotice: "侧边横幅广告 160×600",
+    btnNoWM: "下载超清视频 (无水印)",
+    btnMP3: "提取 MP3 音频 (原声无损)",
+    directDisclaimer: "视频直接从 TikTok/抖音官方 CDN 服务器串流下载 — TraTuiLoc 本地不存储任何数据。",
+    tryAgain: "← 解析下载其他视频",
+    modalTitle: "正在准备高速下载链接...",
+    modalWait: "正在直连官方源服务器，请稍候片刻",
+    modalCounting: "下载链接将在倒计时后就绪：",
+    modalAdHeading: "赞助商专属展示区",
+    modalAdText: "文件下载前最高点击与关注度黄金广告位",
+    modalBtnDownload: "⬇ 点击此处立即获取文件",
+    howToTitle: "如何下载无水印 TikTok / 抖音视频",
+    step1Title: "第 1 步",
+    step1Desc: '打开 TikTok 或抖音，点击 <strong class="text-white">分享</strong> → <strong class="text-white">复制链接</strong>',
+    step2Title: "第 2 步",
+    step2Desc: '将链接粘贴到上方搜索框中，点击 <strong class="text-white">立即下载</strong>',
+    step3Title: "第 3 步",
+    step3Desc: '选择 <strong class="text-white">下载超清视频</strong> 或 <strong class="text-white">提取 MP3 音频</strong> 保存到本地',
+    guidesTitle: "教程与使用技巧",
+    guidesSubtitle: "探索适用于各类设备的无水印视频保存技巧",
+    guide1Title: "iPhone 保存技巧",
+    guide1Desc: "无需下载任何 App，利用 Safari 浏览器直接将无水印视频保存到手机相册中。",
+    guide2Title: "Android 保存指南",
+    guide2Desc: "指导华为、小米、OPPO 等安卓手机安全将超清视频存入相册。",
+    guide3Title: "提取 MP3 伴奏音乐",
+    guide3Desc: "如何快速提取 TikTok 热门原声与背景音乐，用作手机铃声或二次剪辑。",
+    readMore: "阅读攻略 →",
+    faqTitle: "常见问题解答",
+    faq1Q: "下载视频是完全免费的吗？",
+    faq1A: "是的，100% 永久免费，不限下载次数，无需注册任何账号。",
+    faq2Q: "支持中国大陆版抖音（Douyin）吗？",
+    faq2A: "完全支持！无论是海外版 TikTok 还是国内版抖音均可秒级解析。",
+    faq3Q: "下载的视频真的没有任何水印和 Logo 吗？",
+    faq3A: "是的。我们直接从字节跳动 CDN 提取未经叠加水印的纯净视频流。",
+    faq4Q: "TraTuiLoc 会保存我下载的视频吗？",
+    faq4A: "不会。TraTuiLoc 不存储任何视频文件，所有数据直接串流传输到您的设备。",
+    footerPrivacy: "隐私政策",
+    footerTerms: "服务条款",
+    footerDmca: "DMCA 版权声明",
+    footerDisclaimer: "© 2026 TraTuiLoc · tratuiloc.xyz · 与字节跳动、TikTok 或抖音无关。我们不在服务器上存储任何视频。",
+    errEmpty: "请在上方输入框中粘贴 TikTok 或抖音视频链接。",
+    errInvalid: "链接格式不正确，请复制正确的 TikTok 或抖音分享链接。",
+    errServer: "服务器连接异常，请检查网络后重试。",
+    errGeneral: "无法解析该视频，请确认视频是否为公开状态并稍后重试。"
   }
 };
 
-// ── Hàm áp dụng ngôn ngữ (Apply Language) ─────────────────────────────────────
+// ── Render Menu Dropdown ────────────────────────────────────────────────────
+function renderLanguageMenu() {
+  if (!langMenu) return;
+
+  langMenu.innerHTML = SUPPORTED_LANGUAGES.map((item) => {
+    const isActive = item.code === currentLang;
+    return `
+      <button
+        type="button"
+        class="lang-item w-full flex items-center justify-between px-3.5 py-2 text-xs text-left text-gray-300 hover:text-white transition-colors ${isActive ? 'active' : ''}"
+        data-lang-code="${item.code}"
+      >
+        <span class="flex items-center gap-2">
+          <span class="text-sm">${item.flag}</span>
+          <span class="font-medium">${item.label}</span>
+        </span>
+        ${isActive ? '<span class="text-violet-400 font-bold">✓</span>' : ''}
+      </button>
+    `;
+  }).join("");
+
+  // Gắn sự kiện click cho từng option
+  langMenu.querySelectorAll("[data-lang-code]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const code = btn.getAttribute("data-lang-code");
+      setLanguage(code);
+      closeLanguageMenu();
+    });
+  });
+}
+
+function openLanguageMenu() {
+  if (!langMenu) return;
+  renderLanguageMenu();
+  langMenu.classList.remove("hidden");
+  if (langArrow) langArrow.classList.add("rotate-180");
+  if (langToggle) langToggle.setAttribute("aria-expanded", "true");
+}
+
+function closeLanguageMenu() {
+  if (!langMenu) return;
+  langMenu.classList.add("hidden");
+  if (langArrow) langArrow.classList.remove("rotate-180");
+  if (langToggle) langToggle.setAttribute("aria-expanded", "false");
+}
+
+function toggleLanguageMenu() {
+  if (!langMenu) return;
+  if (langMenu.classList.contains("hidden")) {
+    openLanguageMenu();
+  } else {
+    closeLanguageMenu();
+  }
+}
+
+// ── Hàm Áp dụng Ngôn ngữ (Set Language) ──────────────────────────────────────
 function setLanguage(lang) {
-  currentLang = lang === "vi" ? "vi" : "en";
+  currentLang = TRANSLATIONS[lang] ? lang : "en";
   localStorage.setItem("lang", currentLang);
 
   document.documentElement.lang = currentLang;
+
+  // Cập nhật nhãn trên nút Header
+  const activeLangConfig = SUPPORTED_LANGUAGES.find((item) => item.code === currentLang) || SUPPORTED_LANGUAGES[0];
   if (langLabel) {
-    langLabel.textContent = currentLang === "vi" ? "VI" : "EN";
+    langLabel.textContent = activeLangConfig.label;
   }
 
-  const dict = TRANSLATIONS[currentLang];
+  const dict = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
 
   // Cập nhật tất cả các phần tử có data-i18n
   document.querySelectorAll("[data-i18n]").forEach((el) => {
@@ -154,17 +920,17 @@ function setLanguage(lang) {
     }
   });
 
-  // Cập nhật Placeholder
+  // Cập nhật Placeholder ô tìm kiếm
   if (urlInput) {
     urlInput.placeholder = dict.inputPlaceholder;
   }
 
-  // Cập nhật nút Download nếu không loading
+  // Cập nhật nút Download nếu đang không loading
   if (!isLoading && btnText) {
     btnText.textContent = dict.btnDownload;
   }
 
-  // Cập nhật đường link chuyên mục Guide theo ngôn ngữ
+  // Cập nhật đường link chuyên mục Guide theo ngôn ngữ (vi trỏ về tiếng Việt, còn lại trỏ tiếng Anh)
   const linkIphone  = document.getElementById("guideLinkIphone");
   const linkAndroid = document.getElementById("guideLinkAndroid");
   const linkMP3     = document.getElementById("guideLinkMP3");
@@ -189,21 +955,14 @@ function setLanguage(lang) {
 // Khởi tạo ngôn ngữ ban đầu
 function initLanguage() {
   const saved = localStorage.getItem("lang");
-  if (saved) {
+  if (saved && TRANSLATIONS[saved]) {
     setLanguage(saved);
   } else {
     // Tự động nhận diện qua ngôn ngữ của trình duyệt
     const browserLang = (navigator.language || navigator.userLanguage || "en").toLowerCase();
-    const detected = browserLang.startsWith("vi") ? "vi" : "en";
-    setLanguage(detected);
+    const matched = SUPPORTED_LANGUAGES.find((item) => browserLang.startsWith(item.code));
+    setLanguage(matched ? matched.code : "en");
   }
-}
-
-if (langToggle) {
-  langToggle.addEventListener("click", () => {
-    const nextLang = currentLang === "en" ? "vi" : "en";
-    setLanguage(nextLang);
-  });
 }
 
 // ── Dark / Light Mode ────────────────────────────────────────────────────────
@@ -225,6 +984,93 @@ if (themeToggle) {
   updateThemeIcons();
 }
 
+// ── Download Countdown Modal Logic ──────────────────────────────────────────
+function startDownloadCountdown(url, filename) {
+  if (!url || url === "#") return;
+
+  pendingDownloadUrl = url;
+  pendingDownloadFilename = filename || "tiktok-video.mp4";
+
+  const dict = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+
+  if (!downloadModal) {
+    // Fallback nếu không có modal
+    window.open(url, "_blank");
+    return;
+  }
+
+  // Reset modal state
+  let timeLeft = 3;
+  if (countdownNumber) {
+    countdownNumber.textContent = `${timeLeft}s`;
+    countdownNumber.className = "text-base font-extrabold text-violet-400 bg-violet-500/10 border border-violet-500/30 px-3 py-0.5 rounded-full";
+  }
+
+  if (modalDownloadBtn) {
+    modalDownloadBtn.href = "#";
+    modalDownloadBtn.classList.add("opacity-50", "pointer-events-none");
+  }
+  if (modalBtnText) {
+    modalBtnText.textContent = dict.modalWait || "Đang kết nối...";
+  }
+
+  downloadModal.classList.remove("hidden");
+
+  if (countdownTimer) clearInterval(countdownTimer);
+
+  countdownTimer = setInterval(() => {
+    timeLeft--;
+    if (timeLeft > 0) {
+      if (countdownNumber) countdownNumber.textContent = `${timeLeft}s`;
+    } else {
+      clearInterval(countdownTimer);
+      if (countdownNumber) {
+        countdownNumber.textContent = "✓ Sẵn sàng";
+        countdownNumber.className = "text-xs font-bold text-green-400 bg-green-500/15 border border-green-500/30 px-2.5 py-0.5 rounded-full";
+      }
+
+      if (modalDownloadBtn) {
+        modalDownloadBtn.href = pendingDownloadUrl;
+        modalDownloadBtn.setAttribute("download", pendingDownloadFilename);
+        modalDownloadBtn.classList.remove("opacity-50", "pointer-events-none");
+      }
+      if (modalBtnText) {
+        modalBtnText.textContent = dict.modalBtnDownload || "⬇ Bấm vào đây để Nhận file ngay";
+      }
+
+      // Tự động kích hoạt tải xuống thẳng về máy
+      try {
+        const tempLink = document.createElement("a");
+        tempLink.href = pendingDownloadUrl;
+        tempLink.setAttribute("download", pendingDownloadFilename);
+        tempLink.target = "_blank";
+        document.body.appendChild(tempLink);
+        tempLink.click();
+        document.body.removeChild(tempLink);
+      } catch (err) {
+        console.log("[Auto Download]", err);
+      }
+    }
+  }, 1000);
+}
+
+function closeDownloadModal() {
+  if (countdownTimer) clearInterval(countdownTimer);
+  if (downloadModal) downloadModal.classList.add("hidden");
+}
+
+if (modalCloseBtn) {
+  modalCloseBtn.addEventListener("click", closeDownloadModal);
+}
+
+if (downloadModal) {
+  downloadModal.addEventListener("click", (e) => {
+    if (e.target === downloadModal) {
+      closeDownloadModal();
+    }
+  });
+}
+
 // ── Helpers ──────────────────────────────────────────────────────────────────
 function showError(msg) {
   errorText.textContent = msg;
@@ -241,28 +1087,26 @@ function hideError() {
   errorMsg.classList.add("hidden");
 }
 
-function setLoading(loading) {
-  isLoading = loading;
-  downloadBtn.disabled = loading;
-  const dict = TRANSLATIONS[currentLang];
-  btnText.innerHTML = loading
-    ? `<span class="spinner"></span> ${dict.btnProcessing}`
-    : dict.btnDownload;
+function setLoading(state) {
+  isLoading = state;
+  const dict = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+
+  if (state) {
+    downloadBtn.disabled = true;
+    btnText.innerHTML = `<span class="spinner"></span> <span>${dict.btnProcessing}</span>`;
+  } else {
+    downloadBtn.disabled = false;
+    btnText.innerHTML = dict.btnDownload;
+  }
 }
 
+// ── Hiển thị kết quả ─────────────────────────────────────────────────────────
 function showResult(data) {
-  if (data.thumbnail) {
-    thumbnail.src = data.thumbnail;
-    thumbnail.style.display = "block";
-  } else {
-    thumbnail.style.display = "none";
-  }
+  thumbnail.src = data.thumbnail || "";
+  videoTitle.textContent = data.title || "Video TikTok";
 
-  videoTitle.textContent = data.title || "TikTok Video";
-
-  if (data.musicInfo && data.musicInfo.title) {
-    const artist = data.musicInfo.author ? ` • ${data.musicInfo.author}` : "";
-    musicTitle.textContent = `${data.musicInfo.title}${artist}`;
+  if (data.musicTitle) {
+    musicTitle.textContent = data.musicTitle;
     musicInfo.classList.remove("hidden");
   } else {
     musicInfo.classList.add("hidden");
@@ -270,6 +1114,8 @@ function showResult(data) {
 
   // Nút Video HD trực tiếp
   if (data.noWatermark) {
+    btnNoWM.dataset.downloadUrl = data.noWatermark;
+    btnNoWM.dataset.downloadFilename = "tiktok-video-hd.mp4";
     btnNoWM.href = data.noWatermark;
     btnNoWM.classList.remove("hidden");
   } else {
@@ -278,6 +1124,8 @@ function showResult(data) {
 
   // Nút MP3 trực tiếp
   if (data.music) {
+    btnMP3.dataset.downloadUrl = data.music;
+    btnMP3.dataset.downloadFilename = "tiktok-audio.mp3";
     btnMP3.href = data.music;
     btnMP3.classList.remove("hidden");
   } else {
@@ -314,7 +1162,7 @@ function looksLikeTikTokUrl(url) {
 async function handleDownload() {
   if (isLoading) return;
 
-  const dict = TRANSLATIONS[currentLang];
+  const dict = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
   const url = urlInput.value.trim();
   hideError();
   resultSection.classList.add("hidden");
@@ -363,6 +1211,44 @@ urlInput.addEventListener("keydown", (e) => {
 });
 
 tryAgainBtn.addEventListener("click", reset);
+
+// Bắt sự kiện click nút Tải Video HD và MP3 để kích hoạt Modal chuẩn bị link
+if (btnNoWM) {
+  btnNoWM.addEventListener("click", (e) => {
+    e.preventDefault();
+    const url = btnNoWM.dataset.downloadUrl || btnNoWM.href;
+    startDownloadCountdown(url, "tiktok-hd-nowatermark.mp4");
+  });
+}
+
+if (btnMP3) {
+  btnMP3.addEventListener("click", (e) => {
+    e.preventDefault();
+    const url = btnMP3.dataset.downloadUrl || btnMP3.href;
+    startDownloadCountdown(url, "tiktok-audio.mp3");
+  });
+}
+
+// Dropdown Language Switcher
+if (langToggle) {
+  langToggle.addEventListener("click", (e) => {
+    e.stopPropagation();
+    toggleLanguageMenu();
+  });
+}
+
+document.addEventListener("click", (e) => {
+  if (langDropdownContainer && !langDropdownContainer.contains(e.target)) {
+    closeLanguageMenu();
+  }
+});
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    closeLanguageMenu();
+    closeDownloadModal();
+  }
+});
 
 // Khởi chạy hệ thống ngôn ngữ
 initLanguage();
