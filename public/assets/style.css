@@ -183,3 +183,25 @@ html.light #themeToggle {
 html.light #themeToggle:hover {
   background: #F1F5F9;
 }
+
+/* ─── Ad Box & Language Switcher ────────────────────── */
+.ad-box {
+  transition: all 0.2s ease;
+}
+html.light .ad-box {
+  background-color: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+}
+html.light .ad-label {
+  color: #94A3B8 !important;
+}
+html.light #langToggle {
+  border-color: #CBD5E1;
+  background: #FFFFFF;
+  color: #0F172A;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+html.light #langToggle:hover {
+  background: #F1F5F9;
+}

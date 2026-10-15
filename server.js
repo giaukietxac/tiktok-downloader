@@ -308,6 +308,28 @@ app.get("/privacy", (_req, res) => res.sendFile(path.join(__dirname, "public", "
 app.get("/terms",   (_req, res) => res.sendFile(path.join(__dirname, "public", "terms.html")));
 app.get("/dmca",    (_req, res) => res.sendFile(path.join(__dirname, "public", "dmca.html")));
 
+// ─── Chuyên mục bài viết SEO Quốc tế (English Guides) ────────────────────────
+app.get("/guides/how-to-download-tiktok-videos-on-iphone", (_req, res) => {
+  res.sendFile(path.join(__dirname, "public", "guides", "how-to-download-tiktok-videos-on-iphone.html"));
+});
+app.get("/guides/how-to-download-tiktok-videos-on-android", (_req, res) => {
+  res.sendFile(path.join(__dirname, "public", "guides", "how-to-download-tiktok-videos-on-android.html"));
+});
+app.get("/guides/how-to-convert-tiktok-to-mp3", (_req, res) => {
+  res.sendFile(path.join(__dirname, "public", "guides", "how-to-convert-tiktok-to-mp3.html"));
+});
+
+// ─── Chuyên mục bài viết SEO Tiếng Việt (Vietnamese Guides) ──────────────────
+app.get("/huong-dan/tai-video-tiktok-tren-iphone", (_req, res) => {
+  res.sendFile(path.join(__dirname, "public", "huong-dan", "tai-video-tiktok-tren-iphone.html"));
+});
+app.get("/huong-dan/tai-video-tiktok-tren-android", (_req, res) => {
+  res.sendFile(path.join(__dirname, "public", "huong-dan", "tai-video-tiktok-tren-android.html"));
+});
+app.get("/huong-dan/cach-tach-nhac-tiktok-sang-mp3", (_req, res) => {
+  res.sendFile(path.join(__dirname, "public", "huong-dan", "cach-tach-nhac-tiktok-sang-mp3.html"));
+});
+
 // ─── Fallback → index.html ───────────────────────────────────────────────────
 app.get("/{*splat}", (_req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
 
