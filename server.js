@@ -335,7 +335,8 @@ app.get("/{*splat}", (_req, res) => res.sendFile(path.join(__dirname, "public", 
 
 // ─── Start ───────────────────────────────────────────────────────────────────
 app.listen(PORT, () => {
-  console.log(`\n🚀 TraTuiLoc chạy tại: http://localhost:${PORT}`);
+  console.log(`\n🚀 TikSnap chạy tại: http://localhost:${PORT}`);
+  console.log(`📡 Domain: https://tiksnap.space`);
   console.log(`📋 Health: http://localhost:${PORT}/health`);
   console.log(`📊 Stats: http://localhost:${PORT}/api/stats\n`);
 });
