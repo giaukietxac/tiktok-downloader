@@ -73,13 +73,6 @@ details summary::-webkit-details-marker {
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25) !important;
 }
 
-/* ─── Paste Button Feedback ─────────────────────────── */
-.paste-success {
-  color: #10B981 !important;
-  background-color: rgba(16, 185, 129, 0.15) !important;
-  border-color: rgba(16, 185, 129, 0.3) !important;
-}
-
 /* =====================================================================
    LIGHT MODE OVERRIDES (Kích hoạt khi <html class="light">)
    ===================================================================== */

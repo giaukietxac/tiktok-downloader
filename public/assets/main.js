@@ -3,7 +3,6 @@
    ===================================================================== */
 
 const urlInput      = document.getElementById("urlInput");
-const pasteBtn      = document.getElementById("pasteBtn");
 const downloadBtn   = document.getElementById("downloadBtn");
 const btnText       = document.getElementById("btnText");
 const errorMsg      = document.getElementById("errorMsg");
@@ -40,43 +39,6 @@ if (themeToggle) {
   });
   // Cập nhật trạng thái icon theo theme đang chạy
   updateThemeIcons();
-}
-
-// ── Nút Dán thông minh (1-Click Paste từ Clipboard) ──────────────────────────
-if (pasteBtn) {
-  if (navigator.clipboard && navigator.clipboard.readText) {
-    pasteBtn.addEventListener("click", async () => {
-      try {
-        const text = await navigator.clipboard.readText();
-        if (text && text.trim()) {
-          const trimmed = text.trim();
-          urlInput.value = trimmed;
-
-          // Phản hồi giao diện trực quan
-          const originalHTML = pasteBtn.innerHTML;
-          pasteBtn.innerHTML = "<span>✅</span> <span>Đã dán</span>";
-          pasteBtn.classList.add("paste-success");
-          setTimeout(() => {
-            pasteBtn.innerHTML = originalHTML;
-            pasteBtn.classList.remove("paste-success");
-          }, 1500);
-
-          // Tự động tải nếu là link TikTok hợp lệ
-          if (looksLikeTikTokUrl(trimmed)) {
-            handleDownload();
-          }
-        }
-      } catch (err) {
-        // Trình duyệt chặn quyền clipboard -> focus vào ô để người dùng tự dán
-        console.log("Clipboard read rejected:", err.message);
-        urlInput.focus();
-        urlInput.select();
-      }
-    });
-  } else {
-    // Ẩn nút Dán nếu trình duyệt không hỗ trợ Clipboard API
-    pasteBtn.style.display = "none";
-  }
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -215,14 +177,6 @@ downloadBtn.addEventListener("click", handleDownload);
 
 urlInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter") handleDownload();
-});
-
-// Auto-submit khi paste thông thường (Ctrl+V hoặc chuột phải)
-urlInput.addEventListener("paste", () => {
-  setTimeout(() => {
-    const url = urlInput.value.trim();
-    if (url && looksLikeTikTokUrl(url)) handleDownload();
-  }, 100);
 });
 
 tryAgainBtn.addEventListener("click", reset);
