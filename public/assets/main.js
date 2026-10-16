@@ -1014,18 +1014,95 @@ if (themeToggle) {
   updateThemeIcons();
 }
 
+// ── Kích hoạt Tải File Trực Tiếp Về Máy (Không Mở Tab Mới) ───────────────────
+let isDownloadingFile = false;
+
+async function triggerDirectFileDownload(url, filename) {
+  if (!url || url === "#" || isDownloadingFile) return;
+  isDownloadingFile = true;
+
+  const dlType = filename.includes(".mp3") ? "audio_mp3" : "video_hd";
+  trackEvent("download_started", {
+    event_category: "Conversion",
+    download_type: dlType,
+    filename,
+    language: currentLang,
+  });
+  notifyDownloadPing(dlType);
+
+  if (modalBtnText) {
+    modalBtnText.innerHTML = `<span class="spinner"></span> <span>Đang lưu file về máy...</span>`;
+  }
+  if (modalDownloadBtn) {
+    modalDownloadBtn.classList.add("pointer-events-none", "opacity-80");
+  }
+
+  // Cách 1: Tải trực tiếp bằng Blob (Trình duyệt tự lưu vào thư mục Downloads)
+  try {
+    const res = await fetch(url, { mode: "cors" });
+    if (!res.ok) throw new Error("CDN response not ok: " + res.status);
+    const blob = await res.blob();
+    const blobUrl = window.URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.style.display = "none";
+    a.href = blobUrl;
+    a.download = filename || "tiktok-video.mp4";
+    document.body.appendChild(a);
+    a.click();
+
+    setTimeout(() => {
+      window.URL.revokeObjectURL(blobUrl);
+      document.body.removeChild(a);
+      if (modalBtnText) modalBtnText.textContent = "✓ Đã tải file xong!";
+      setTimeout(() => {
+        closeDownloadModal();
+        isDownloadingFile = false;
+      }, 1200);
+    }, 500);
+    return;
+  } catch (err) {
+    console.warn("[Direct Download] Blob fetch thất bại, chuyển hướng qua Proxy tải về:", err);
+  }
+
+  // Cách 2: Tải thông qua máy chủ Proxy với Content-Disposition: attachment
+  // Dùng hidden iframe để trình duyệt tự kích hoạt tải file mà TUYỆT ĐỐI KHÔNG mở tab mới
+  try {
+    const proxyUrl = `/proxy?url=${encodeURIComponent(url)}&filename=${encodeURIComponent(filename)}`;
+    const iframe = document.createElement("iframe");
+    iframe.style.display = "none";
+    iframe.src = proxyUrl;
+    document.body.appendChild(iframe);
+
+    if (modalBtnText) modalBtnText.textContent = "✓ Đang tải file về...";
+    setTimeout(() => {
+      document.body.removeChild(iframe);
+      closeDownloadModal();
+      isDownloadingFile = false;
+    }, 4000);
+  } catch (errProxy) {
+    console.error("[Download Error]", errProxy);
+    window.location.href = `/proxy?url=${encodeURIComponent(url)}&filename=${encodeURIComponent(filename)}`;
+    isDownloadingFile = false;
+  } finally {
+    if (modalDownloadBtn) {
+      modalDownloadBtn.classList.remove("pointer-events-none", "opacity-80");
+    }
+  }
+}
+
 // ── Download Countdown Modal Logic ──────────────────────────────────────────
 function startDownloadCountdown(url, filename) {
   if (!url || url === "#") return;
 
   pendingDownloadUrl = url;
   pendingDownloadFilename = filename || "tiktok-video.mp4";
+  isDownloadingFile = false;
 
   const dict = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
 
   if (!downloadModal) {
-    // Fallback nếu không có modal
-    window.open(url, "_blank");
+    triggerDirectFileDownload(url, filename);
     return;
   }
 
@@ -1037,7 +1114,6 @@ function startDownloadCountdown(url, filename) {
   }
 
   if (modalDownloadBtn) {
-    modalDownloadBtn.href = "#";
     modalDownloadBtn.classList.add("opacity-50", "pointer-events-none");
   }
   if (modalBtnText) {
@@ -1060,35 +1136,14 @@ function startDownloadCountdown(url, filename) {
       }
 
       if (modalDownloadBtn) {
-        modalDownloadBtn.href = pendingDownloadUrl;
-        modalDownloadBtn.setAttribute("download", pendingDownloadFilename);
         modalDownloadBtn.classList.remove("opacity-50", "pointer-events-none");
       }
       if (modalBtnText) {
         modalBtnText.textContent = dict.modalBtnDownload || "⬇ Bấm vào đây để Nhận file ngay";
       }
 
-      // Tự động kích hoạt tải xuống thẳng về máy
-      try {
-        const tempLink = document.createElement("a");
-        tempLink.href = pendingDownloadUrl;
-        tempLink.setAttribute("download", pendingDownloadFilename);
-        tempLink.target = "_blank";
-        document.body.appendChild(tempLink);
-        tempLink.click();
-        document.body.removeChild(tempLink);
-
-        const dlType = pendingDownloadFilename.includes(".mp3") ? "audio_mp3" : "video_hd";
-        trackEvent("download_started", {
-          event_category: "Conversion",
-          download_type: dlType,
-          filename: pendingDownloadFilename,
-          language: currentLang,
-        });
-        notifyDownloadPing(dlType);
-      } catch (err) {
-        console.log("[Auto Download]", err);
-      }
+      // Tự động kích hoạt tải trực tiếp về máy người dùng
+      triggerDirectFileDownload(pendingDownloadUrl, pendingDownloadFilename);
     }
   }, 1000);
 }
@@ -1096,6 +1151,7 @@ function startDownloadCountdown(url, filename) {
 function closeDownloadModal() {
   if (countdownTimer) clearInterval(countdownTimer);
   if (downloadModal) downloadModal.classList.add("hidden");
+  isDownloadingFile = false;
 }
 
 if (modalCloseBtn) {
@@ -1104,14 +1160,7 @@ if (modalCloseBtn) {
 
 if (modalDownloadBtn) {
   modalDownloadBtn.addEventListener("click", () => {
-    const dlType = pendingDownloadFilename.includes(".mp3") ? "audio_mp3" : "video_hd";
-    trackEvent("download_click_manual", {
-      event_category: "Conversion",
-      download_type: dlType,
-      filename: pendingDownloadFilename,
-      language: currentLang,
-    });
-    notifyDownloadPing(dlType);
+    triggerDirectFileDownload(pendingDownloadUrl, pendingDownloadFilename);
   });
 }
 

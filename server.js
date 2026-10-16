@@ -146,11 +146,18 @@ async function extractViaTikWM(url) {
   }
 
   const d = json.data;
+  // Ưu tiên d.play (link video trực tiếp chuẩn nhất từ ByteDance, không dính lỗi v16-notes)
+  const cleanVideo = (d.play && !d.play.includes("notes"))
+    ? d.play
+    : (d.hdplay && !d.hdplay.includes("notes"))
+      ? d.hdplay
+      : (d.play || d.hdplay || null);
+
   return {
     title: d.title || "Video TikTok",
     thumbnail: d.cover || d.origin_cover || null,
-    noWatermark: d.hdplay || d.play || null,
-    withWatermark: d.wmplay || d.play || null,
+    noWatermark: cleanVideo,
+    withWatermark: d.wmplay || cleanVideo,
     music: d.music || (d.music_info && d.music_info.play) || null,
     musicInfo: d.music_info ? {
       title: d.music_info.title || "Original Sound",
