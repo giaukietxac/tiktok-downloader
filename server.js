@@ -24,8 +24,41 @@ const cache = new Map();
 const CACHE_TTL = 15 * 60 * 1000; // 15 phút
 const MAX_CACHE_SIZE = 500; // Tối đa 500 video gần nhất
 
-// ─── Bộ đếm tổng lượt tải ────────────────────────────────────────────────────
+// ─── Hệ thống Đo lường & Thống kê Thời gian thực (Live Analytics) ─────────────
 let totalDownloads = 1580;
+
+const systemStats = {
+  startTime: Date.now(),
+  totalRequests: 0,
+  successRequests: 0,
+  errorRequests: 0,
+  downloadsTriggered: 0,
+  cacheHits: 0,
+  cacheMisses: 0,
+  platforms: {
+    tiktok: 0,
+    douyin: 0,
+  },
+  errorsByType: {
+    invalid_url: 0,
+    rate_limited: 0,
+    upstream_not_found: 0,
+    server_error: 0,
+  },
+  recentLogs: [], // Tối đa 30 sự kiện gần nhất
+};
+
+function logActivity(entry) {
+  systemStats.recentLogs.unshift({
+    id: Date.now() + "_" + Math.random().toString(36).substring(2, 6),
+    timestamp: new Date().toISOString(),
+    timeStr: new Date().toLocaleTimeString("vi-VN", { hour12: false }),
+    ...entry,
+  });
+  if (systemStats.recentLogs.length > 30) {
+    systemStats.recentLogs.pop();
+  }
+}
 
 function getCached(url) {
   const entry = cache.get(url);
@@ -188,19 +221,64 @@ async function extractViaFallback(url) {
 
 // ─── API: POST /api/download ────────────────────────────────────────────────
 app.post("/api/download", async (req, res) => {
+  const reqStart = Date.now();
   const { url } = req.body;
 
+  systemStats.totalRequests++;
+
   if (!url || typeof url !== "string") {
+    systemStats.errorRequests++;
+    systemStats.errorsByType.invalid_url++;
+    logActivity({
+      platform: "unknown",
+      status: "error",
+      title: "Thiếu link đầu vào",
+      url: "",
+      durationMs: Date.now() - reqStart,
+      source: "validation",
+      errorMsg: "Vui lòng cung cấp link",
+    });
     return res.status(400).json({ success: false, error: "Vui lòng cung cấp đường link TikTok." });
   }
 
   const trimmed = url.trim();
+  const isDouyin = trimmed.includes("douyin.com") || trimmed.includes("iesdouyin.com");
+  const platform = isDouyin ? "douyin" : "tiktok";
+
+  if (isDouyin) {
+    systemStats.platforms.douyin++;
+  } else {
+    systemStats.platforms.tiktok++;
+  }
+
   if (!isValidTikTokUrl(trimmed)) {
+    systemStats.errorRequests++;
+    systemStats.errorsByType.invalid_url++;
+    logActivity({
+      platform,
+      status: "error",
+      title: "Link sai định dạng",
+      url: trimmed.slice(0, 70),
+      durationMs: Date.now() - reqStart,
+      source: "validation",
+      errorMsg: "Đường link không đúng định dạng TikTok/Douyin",
+    });
     return res.status(400).json({ success: false, error: "Link không hợp lệ. Vui lòng dán đúng link TikTok hoặc Douyin." });
   }
 
   // 1. Kiểm tra giới hạn tốc độ (Rate Limit)
   if (isRateLimited(req)) {
+    systemStats.errorRequests++;
+    systemStats.errorsByType.rate_limited++;
+    logActivity({
+      platform,
+      status: "error",
+      title: "Bị chặn Rate Limit",
+      url: trimmed.slice(0, 70),
+      durationMs: Date.now() - reqStart,
+      source: "rate_limit",
+      errorMsg: "Vượt quá 20 yêu cầu / phút",
+    });
     return res.status(429).json({
       success: false,
       error: "Bạn gửi yêu cầu quá nhanh. Vui lòng đợi 1 phút rồi thử lại.",
@@ -212,22 +290,49 @@ app.post("/api/download", async (req, res) => {
   // 2. Kiểm tra Cache RAM trước (0ms, 0đ băng thông)
   const cached = getCached(trimmed);
   if (cached) {
+    systemStats.cacheHits++;
+    systemStats.successRequests++;
     totalDownloads++;
-    console.log(`[Cache HIT] "${cached.title?.slice(0, 50)}..."`);
+    const duration = Date.now() - reqStart;
+    logActivity({
+      platform,
+      status: "success",
+      title: cached.title?.slice(0, 60) || "Video TikTok",
+      url: trimmed.slice(0, 70),
+      durationMs: duration,
+      source: "cache",
+    });
+    console.log(`[Cache HIT - ${duration}ms] "${cached.title?.slice(0, 50)}..."`);
     return res.json({ success: true, ...cached });
   }
+
+  systemStats.cacheMisses++;
 
   try {
     // 3. Gọi nguồn chính (TikWM API)
     let data = await extractViaTikWM(trimmed);
+    let usedSource = "tikwm";
 
     // 4. Nếu TikWM lỗi, tự động chuyển sang nguồn dự phòng
     if (!data || !data.noWatermark) {
       console.log("[TikWM] Không trích xuất được, chuyển sang nguồn dự phòng...");
       data = await extractViaFallback(trimmed);
+      usedSource = "fallback";
     }
 
     if (!data || !data.noWatermark) {
+      systemStats.errorRequests++;
+      systemStats.errorsByType.upstream_not_found++;
+      const duration = Date.now() - reqStart;
+      logActivity({
+        platform,
+        status: "error",
+        title: "Không thể lấy nội dung",
+        url: trimmed.slice(0, 70),
+        durationMs: duration,
+        source: "upstream",
+        errorMsg: "Video bị xóa, riêng tư hoặc link đã hết hạn",
+      });
       return res.status(422).json({
         success: false,
         error: "Không thể tải video này. Có thể video đã bị xóa, ở chế độ riêng tư, hoặc link đã hết hạn.",
@@ -236,12 +341,35 @@ app.post("/api/download", async (req, res) => {
 
     // 5. Lưu vào Cache RAM cho những người dùng sau
     setCache(trimmed, data);
+    systemStats.successRequests++;
     totalDownloads++;
 
-    console.log(`[OK] "${data.title.slice(0, 50)}..."`);
+    const duration = Date.now() - reqStart;
+    logActivity({
+      platform,
+      status: "success",
+      title: data.title?.slice(0, 60) || "Video TikTok",
+      url: trimmed.slice(0, 70),
+      durationMs: duration,
+      source: usedSource,
+    });
+
+    console.log(`[OK - ${usedSource} - ${duration}ms] "${data.title.slice(0, 50)}..."`);
     return res.json({ success: true, ...data });
 
   } catch (err) {
+    systemStats.errorRequests++;
+    systemStats.errorsByType.server_error++;
+    const duration = Date.now() - reqStart;
+    logActivity({
+      platform,
+      status: "error",
+      title: "Lỗi máy chủ",
+      url: trimmed.slice(0, 70),
+      durationMs: duration,
+      source: "server",
+      errorMsg: err.message,
+    });
     console.error("[Error]", err.message);
     return res.status(500).json({ success: false, error: "Lỗi máy chủ. Vui lòng thử lại sau ít giây." });
   }
@@ -292,16 +420,58 @@ app.get("/health", (_req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
-// ─── Theo dõi trạng thái tài nguyên hệ thống ────────────────────────────────
+// ─── Ghi nhận lượt tải file thực tế từ trình duyệt ──────────────────────────
+app.post("/api/stats/track-download", (req, res) => {
+  systemStats.downloadsTriggered++;
+  totalDownloads++;
+  res.json({ success: true, totalDownloads, downloadsTriggered: systemStats.downloadsTriggered });
+});
+
+// ─── Theo dõi trạng thái tài nguyên hệ thống (Live Stats API) ───────────────
 app.get("/api/stats", (_req, res) => {
+  const uptimeSec = Math.floor(process.uptime());
+  const hours = Math.floor(uptimeSec / 3600);
+  const minutes = Math.floor((uptimeSec % 3600) / 60);
+  const seconds = uptimeSec % 60;
+  const uptimeHuman = `${hours}h ${minutes}m ${seconds}s`;
+
+  const totalReq = systemStats.totalRequests;
+  const successRate = totalReq > 0
+    ? ((systemStats.successRequests / totalReq) * 100).toFixed(1) + "%"
+    : "100%";
+
+  const totalCacheQueries = systemStats.cacheHits + systemStats.cacheMisses;
+  const cacheHitRate = totalCacheQueries > 0
+    ? ((systemStats.cacheHits / totalCacheQueries) * 100).toFixed(1) + "%"
+    : "0%";
+
   res.json({
+    status: "operational",
     totalDownloads,
-    cacheVideosCount: cache.size,
-    rateLimitTrackedIPs: rateMap.size,
-    uptimeSeconds: Math.floor(process.uptime()),
-    memoryMB: Math.round(process.memoryUsage().rss / 1024 / 1024),
+    systemStats: {
+      totalRequests: systemStats.totalRequests,
+      successRequests: systemStats.successRequests,
+      errorRequests: systemStats.errorRequests,
+      successRate,
+      downloadsTriggered: systemStats.downloadsTriggered,
+      cacheHits: systemStats.cacheHits,
+      cacheMisses: systemStats.cacheMisses,
+      cacheHitRate,
+      activeCacheSize: cache.size,
+      platforms: systemStats.platforms,
+      errorsByType: systemStats.errorsByType,
+      recentLogs: systemStats.recentLogs,
+      uptimeSeconds: uptimeSec,
+      uptimeHuman,
+      memoryMB: Math.round(process.memoryUsage().rss / 1024 / 1024),
+      rateLimitTrackedIPs: rateMap.size,
+    },
+    serverTime: new Date().toISOString(),
   });
 });
+
+// ─── Trang Dashboard Giám sát Trực quan (Live Monitor UI) ───────────────────
+app.get("/stats", (_req, res) => res.sendFile(path.join(__dirname, "public", "stats.html")));
 
 // ─── Trang pháp lý ──────────────────────────────────────────────────────────
 app.get("/privacy", (_req, res) => res.sendFile(path.join(__dirname, "public", "privacy.html")));

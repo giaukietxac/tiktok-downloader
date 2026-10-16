@@ -869,6 +869,7 @@ function renderLanguageMenu() {
       const code = btn.getAttribute("data-lang-code");
       setLanguage(code);
       closeLanguageMenu();
+      trackEvent("change_language", { language: code });
     });
   });
 }
@@ -974,12 +975,41 @@ function updateThemeIcons() {
   }
 }
 
+// ── Analytics & Event Tracking Helper (GA4 + Internal Stats) ────────────────
+function trackEvent(eventName, params = {}) {
+  try {
+    if (typeof window.gtag === "function") {
+      window.gtag("event", eventName, params);
+      console.log(`[GA4 Event] ${eventName}`, params);
+    }
+  } catch (err) {
+    console.warn("[Analytics]", err);
+  }
+}
+
+function notifyDownloadPing(type) {
+  try {
+    const payload = JSON.stringify({ type, timestamp: Date.now() });
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon("/api/stats/track-download", payload);
+    } else {
+      fetch("/api/stats/track-download", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: payload,
+        keepalive: true,
+      }).catch(() => {});
+    }
+  } catch (_) {}
+}
+
 if (themeToggle) {
   themeToggle.addEventListener("click", () => {
     document.documentElement.classList.toggle("light");
     const isLight = document.documentElement.classList.contains("light");
     localStorage.setItem("theme", isLight ? "light" : "dark");
     updateThemeIcons();
+    trackEvent("toggle_theme", { theme: isLight ? "light" : "dark" });
   });
   updateThemeIcons();
 }
@@ -1047,6 +1077,15 @@ function startDownloadCountdown(url, filename) {
         document.body.appendChild(tempLink);
         tempLink.click();
         document.body.removeChild(tempLink);
+
+        const dlType = pendingDownloadFilename.includes(".mp3") ? "audio_mp3" : "video_hd";
+        trackEvent("download_started", {
+          event_category: "Conversion",
+          download_type: dlType,
+          filename: pendingDownloadFilename,
+          language: currentLang,
+        });
+        notifyDownloadPing(dlType);
       } catch (err) {
         console.log("[Auto Download]", err);
       }
@@ -1061,6 +1100,19 @@ function closeDownloadModal() {
 
 if (modalCloseBtn) {
   modalCloseBtn.addEventListener("click", closeDownloadModal);
+}
+
+if (modalDownloadBtn) {
+  modalDownloadBtn.addEventListener("click", () => {
+    const dlType = pendingDownloadFilename.includes(".mp3") ? "audio_mp3" : "video_hd";
+    trackEvent("download_click_manual", {
+      event_category: "Conversion",
+      download_type: dlType,
+      filename: pendingDownloadFilename,
+      language: currentLang,
+    });
+    notifyDownloadPing(dlType);
+  });
 }
 
 if (downloadModal) {
@@ -1168,16 +1220,33 @@ async function handleDownload() {
   resultSection.classList.add("hidden");
 
   if (!url) {
+    trackEvent("analyze_error", {
+      error_type: "empty_input",
+      language: currentLang,
+    });
     showError(dict.errEmpty);
     urlInput.focus();
     return;
   }
   if (!looksLikeTikTokUrl(url)) {
+    trackEvent("analyze_error", {
+      error_type: "invalid_url_format",
+      language: currentLang,
+    });
     showError(dict.errInvalid);
     urlInput.focus();
     return;
   }
 
+  const isDouyin = url.includes("douyin.com") || url.includes("iesdouyin.com");
+  const platform = isDouyin ? "douyin" : "tiktok";
+
+  trackEvent("analyze_submit", {
+    platform,
+    language: currentLang,
+  });
+
+  const parseStartTime = performance.now();
   setLoading(true);
 
   try {
@@ -1188,15 +1257,40 @@ async function handleDownload() {
     });
 
     const data = await response.json();
+    const durationMs = Math.round(performance.now() - parseStartTime);
 
     if (!response.ok || !data.success) {
+      trackEvent("analyze_error", {
+        error_type: "api_failure",
+        error_message: data.error || dict.errGeneral,
+        status_code: response.status,
+        duration_ms: durationMs,
+        platform,
+        language: currentLang,
+      });
       showError(data.error || dict.errGeneral);
       return;
     }
 
+    // ⭐ SỰ KIỆN QUAN TRỌNG NHẤT (Key Event / Conversion)
+    trackEvent("analyze_success", {
+      event_category: "Conversion",
+      title: (data.title || "").slice(0, 80),
+      has_video: !!data.noWatermark,
+      has_audio: !!data.music,
+      duration_ms: durationMs,
+      platform,
+      language: currentLang,
+    });
+
     showResult(data);
   } catch (err) {
     console.error(err);
+    trackEvent("analyze_error", {
+      error_type: "network_error",
+      error_message: err.message,
+      language: currentLang,
+    });
     showError(dict.errServer);
   } finally {
     setLoading(false);
@@ -1216,6 +1310,10 @@ tryAgainBtn.addEventListener("click", reset);
 if (btnNoWM) {
   btnNoWM.addEventListener("click", (e) => {
     e.preventDefault();
+    trackEvent("download_click", {
+      download_type: "video_hd",
+      language: currentLang,
+    });
     const url = btnNoWM.dataset.downloadUrl || btnNoWM.href;
     startDownloadCountdown(url, "tiktok-hd-nowatermark.mp4");
   });
@@ -1224,6 +1322,10 @@ if (btnNoWM) {
 if (btnMP3) {
   btnMP3.addEventListener("click", (e) => {
     e.preventDefault();
+    trackEvent("download_click", {
+      download_type: "audio_mp3",
+      language: currentLang,
+    });
     const url = btnMP3.dataset.downloadUrl || btnMP3.href;
     startDownloadCountdown(url, "tiktok-audio.mp3");
   });
