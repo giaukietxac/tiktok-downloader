@@ -79,6 +79,7 @@ const TRANSLATIONS = {
     btnNoWM: "Download HD Video (No Watermark)",
     btnMP3: "Download MP3 Audio (Original Sound)",
     directDisclaimer: "Videos are downloaded directly from TikTok/Douyin CDN servers — TikSnap stores 0 bytes.",
+    badgeClean: "100% Watermark-Free · Direct Download",
     tryAgain: "← Download another video",
     modalTitle: "Preparing your download...",
     modalWait: "Connecting directly to original CDN server, please wait a moment",
@@ -139,6 +140,7 @@ const TRANSLATIONS = {
     btnNoWM: "Tải Video HD (Không Logo)",
     btnMP3: "Tải Nhạc MP3 (Chất Lượng Gốc)",
     directDisclaimer: "Video được tải thẳng từ máy chủ TikTok/Douyin — TikSnap không lưu trữ bất kỳ nội dung nào.",
+    badgeClean: "100% Sạch Logo · Tải Trực Tiếp",
     tryAgain: "← Tải video khác",
     modalTitle: "Đang tạo đường link tải...",
     modalWait: "Vui lòng chờ giây lát trong khi chúng tôi kết nối trực tiếp đến máy chủ gốc",
@@ -199,6 +201,7 @@ const TRANSLATIONS = {
     btnNoWM: "Descargar Video HD (Sin Marca)",
     btnMP3: "Descargar Audio MP3 (Sonido Original)",
     directDisclaimer: "Los videos se descargan directamente de los servidores CDN de TikTok — TikSnap no almacena nada.",
+    badgeClean: "100% Sin Marca · Descarga Directa",
     tryAgain: "← Descargar otro video",
     modalTitle: "Preparando enlace de descarga...",
     modalWait: "Conectando directamente con los servidores originales, espera un momento",
@@ -259,6 +262,7 @@ const TRANSLATIONS = {
     btnNoWM: "Baixar Vídeo HD (Sem Marca)",
     btnMP3: "Baixar Áudio MP3 (Som Original)",
     directDisclaimer: "Os vídeos são baixados diretamente dos servidores do TikTok — TikSnap não armazena dados.",
+    badgeClean: "100% Sem Marca · Download Direto",
     tryAgain: "← Baixar outro vídeo",
     modalTitle: "Preparando seu download...",
     modalWait: "Conectando diretamente aos servidores originais, aguarde um instante",
@@ -319,6 +323,7 @@ const TRANSLATIONS = {
     btnNoWM: "Unduh Video HD (Tanpa Watermark)",
     btnMP3: "Unduh Audio MP3 (Suara Asli)",
     directDisclaimer: "Video diunduh langsung dari server CDN TikTok — TikSnap tidak menyimpan data apapun.",
+    badgeClean: "100% Tanpa Watermark · Unduh Langsung",
     tryAgain: "← Unduh video lain",
     modalTitle: "Menyiapkan tautan unduhan...",
     modalWait: "Menghubungkan langsung ke server asli, harap tunggu sebentar",
@@ -379,6 +384,7 @@ const TRANSLATIONS = {
     btnNoWM: "Télécharger Vidéo HD (Sans Filigrane)",
     btnMP3: "Télécharger Audio MP3 (Son Original)",
     directDisclaimer: "Les vidéos sont téléchargées directement depuis les serveurs CDN de TikTok — TikSnap ne stocke rien.",
+    badgeClean: "100% Sans Filigrane · Téléchargement Direct",
     tryAgain: "← Télécharger une autre vidéo",
     modalTitle: "Préparation de votre téléchargement...",
     modalWait: "Connexion directe aux serveurs d'origine, veuillez patienter un instant",
@@ -439,6 +445,7 @@ const TRANSLATIONS = {
     btnNoWM: "HD-Video herunterladen (Ohne Wasserzeichen)",
     btnMP3: "MP3-Audio herunterladen (Originalton)",
     directDisclaimer: "Videos werden direkt von den TikTok/Douyin CDN-Servern gestreamt — TikSnap speichert 0 Bytes.",
+    badgeClean: "100% Ohne Wasserzeichen · Direkter Download",
     tryAgain: "← Ein anderes Video herunterladen",
     modalTitle: "Download wird vorbereitet...",
     modalWait: "Verbindung zu den Originalservern wird hergestellt, bitte einen Moment Geduld",
@@ -499,6 +506,7 @@ const TRANSLATIONS = {
     btnNoWM: "HD動画ダウンロード（ロゴなし）",
     btnMP3: "MP3音声をダウンロード（原音質）",
     directDisclaimer: "動画はTikTok/DouyinのCDNから直接ダウンロードされます。TikSnapは動画を保存しません。",
+    badgeClean: "100% 透かしなし · 直接ダウンロード",
     tryAgain: "← 別の動画をダウンロード",
     modalTitle: "ダウンロードリンクを準備中...",
     modalWait: "元のサーバーに直接接続しています。少々お待ちください",
@@ -559,6 +567,7 @@ const TRANSLATIONS = {
     btnNoWM: "HD 동영상 다운로드 (워터마크 없음)",
     btnMP3: "MP3 음원 다운로드 (원본 사운드)",
     directDisclaimer: "동영상은 틱톡/Douyin 서버에서 직접 전송되며 TikSnap은 파일을 저장하지 않습니다.",
+    badgeClean: "100% 워터마크 없음 · 직접 다운로드",
     tryAgain: "← 다른 동영상 다운로드",
     modalTitle: "다운로드 링크 준비 중...",
     modalWait: "원본 서버에 직접 연결 중입니다. 잠시만 기다려주세요",
@@ -619,6 +628,7 @@ const TRANSLATIONS = {
     btnNoWM: "Скачать HD видео (Без водяного знака)",
     btnMP3: "Скачать аудио MP3 (Оригинальный звук)",
     directDisclaimer: "Видео загружаются напрямую с серверов TikTok — TikSnap ничего не хранит.",
+    badgeClean: "100% Без Водяных Знаков · Прямое Скачивание",
     tryAgain: "← Скачать другое видео",
     modalTitle: "Подготовка ссылки на скачивание...",
     modalWait: "Прямое подключение к серверам источника, пожалуйста подождите",
@@ -679,6 +689,7 @@ const TRANSLATIONS = {
     btnNoWM: "تحميل فيديو HD (بدون علامة مائية)",
     btnMP3: "تحميل صوت MP3 (الصوت الأصلي)",
     directDisclaimer: "يتم تنزيل الفيديوهات مباشرة من خوادم تيك توك — TikSnap لا يخزن أي ملفات.",
+    badgeClean: "100% بدون علامة مائية · تحميل مباشر",
     tryAgain: "← تحميل فيديو آخر",
     modalTitle: "جاري تجهيز رابط التنزيل...",
     modalWait: "الاتصال المباشر بالخوادم الأصلية، يُرجى الانتظار لحظات",
@@ -739,6 +750,7 @@ const TRANSLATIONS = {
     btnNoWM: "ดาวน์โหลดวิดีโอ HD (ไม่มีลายน้ำ)",
     btnMP3: "ดาวน์โหลดเสียง MP3 (เสียงต้นฉบับ)",
     directDisclaimer: "วิดีโอถูกดาวน์โหลดโดยตรงจากเซิร์ฟเวอร์ TikTok — TikSnap ไม่จัดเก็บข้อมูลใดๆ",
+    badgeClean: "ไม่มีลายน้ำ 100% · ดาวน์โหลดโดยตรง",
     tryAgain: "← ดาวน์โหลดวิดีโออื่น",
     modalTitle: "กำลังเตรียมลิงก์ดาวน์โหลด...",
     modalWait: "กำลังเชื่อมต่อโดยตรงกับเซิร์ฟเวอร์ต้นฉบับ โปรดรอสักครู่",
@@ -799,6 +811,7 @@ const TRANSLATIONS = {
     btnNoWM: "下载超清视频 (无水印)",
     btnMP3: "提取 MP3 音频 (原声无损)",
     directDisclaimer: "视频直接从 TikTok/抖音官方 CDN 服务器串流下载 — TikSnap 本地不存储任何数据。",
+    badgeClean: "100% 无水印 · 官方直链下载",
     tryAgain: "← 解析下载其他视频",
     modalTitle: "正在准备高速下载链接...",
     modalWait: "正在直连官方源服务器，请稍候片刻",
@@ -1031,7 +1044,7 @@ async function triggerDirectFileDownload(url, filename) {
   notifyDownloadPing(dlType);
 
   if (modalBtnText) {
-    modalBtnText.innerHTML = `<span class="spinner"></span> <span>Đang lưu file về máy...</span>`;
+    modalBtnText.innerHTML = `<span class="spinner"></span> <span>${currentLang === "vi" ? "Đang lưu file về máy..." : "Saving file to device..."}</span>`;
   }
   if (modalDownloadBtn) {
     modalDownloadBtn.classList.add("pointer-events-none", "opacity-80");
@@ -1054,7 +1067,7 @@ async function triggerDirectFileDownload(url, filename) {
     setTimeout(() => {
       window.URL.revokeObjectURL(blobUrl);
       document.body.removeChild(a);
-      if (modalBtnText) modalBtnText.textContent = "✓ Đã tải file xong!";
+      if (modalBtnText) modalBtnText.textContent = currentLang === "vi" ? "✓ Đã tải file xong!" : "✓ Download complete!";
       setTimeout(() => {
         closeDownloadModal();
         isDownloadingFile = false;
@@ -1074,7 +1087,7 @@ async function triggerDirectFileDownload(url, filename) {
     iframe.src = proxyUrl;
     document.body.appendChild(iframe);
 
-    if (modalBtnText) modalBtnText.textContent = "✓ Đang tải file về...";
+    if (modalBtnText) modalBtnText.textContent = currentLang === "vi" ? "✓ Đang tải file về..." : "✓ Downloading file...";
     setTimeout(() => {
       document.body.removeChild(iframe);
       closeDownloadModal();
@@ -1118,7 +1131,7 @@ function startDownloadCountdown(url, filename) {
     modalDownloadBtn.classList.remove("cursor-pointer", "shadow-xl", "shadow-violet-500/25");
   }
   if (modalBtnText) {
-    modalBtnText.textContent = dict.modalWait || "Đang kết nối...";
+    modalBtnText.textContent = dict.modalWait || (currentLang === "vi" ? "Đang kết nối..." : "Connecting...");
   }
 
   downloadModal.classList.remove("hidden");
@@ -1141,7 +1154,7 @@ function startDownloadCountdown(url, filename) {
         modalDownloadBtn.classList.add("cursor-pointer", "shadow-xl", "shadow-violet-500/25");
       }
       if (modalBtnText) {
-        modalBtnText.textContent = dict.modalBtnDownload || "⬇ Bấm vào đây để Nhận file ngay";
+        modalBtnText.textContent = dict.modalBtnDownload || (currentLang === "vi" ? "⬇ Bấm vào đây để Nhận file ngay" : "⬇ Click here to Get Your File");
       }
 
       // Đã sẵn sàng: Chờ khách bấm vào nút mới tải file về máy

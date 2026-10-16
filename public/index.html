@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -138,14 +138,14 @@
       </a>
       <div class="flex items-center gap-3 sm:gap-4">
         <nav class="hidden sm:flex items-center gap-5 text-sm text-gray-400">
-          <a href="/#how-to" class="hover:text-white transition-colors" data-i18n="navHowTo">Hướng dẫn</a>
-          <a href="/#guides" class="hover:text-white transition-colors" data-i18n="navGuides">Mẹo hay</a>
+          <a href="/#how-to" class="hover:text-white transition-colors" data-i18n="navHowTo">How to</a>
+          <a href="/#guides" class="hover:text-white transition-colors" data-i18n="navGuides">Guides</a>
           <a href="/#faq" class="hover:text-white transition-colors" data-i18n="navFaq">FAQ</a>
         </nav>
 
         <!-- Menu chọn Ngôn ngữ Đa quốc gia (Language Dropdown) -->
         <div class="relative inline-block text-left" id="langDropdownContainer">
-          <button id="langToggle" type="button" class="px-2.5 py-1.5 rounded-lg border border-white/15 bg-white/5 hover:bg-white/10 text-xs font-semibold text-gray-300 hover:text-white transition-all flex items-center gap-1.5" aria-expanded="false" aria-haspopup="true" title="Select Language / Chọn ngôn ngữ">
+          <button id="langToggle" type="button" class="px-2.5 py-1.5 rounded-lg border border-white/15 bg-white/5 hover:bg-white/10 text-xs font-semibold text-gray-300 hover:text-white transition-all flex items-center gap-1.5" aria-expanded="false" aria-haspopup="true" title="Select Language">
             <span>🌐</span>
             <span id="langLabel">English</span>
             <svg class="w-3 h-3 text-gray-400 transition-transform" id="langArrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -158,7 +158,7 @@
         </div>
 
         <!-- Nút chuyển đổi Dark/Light Mode -->
-        <button id="themeToggle" type="button" title="Chuyển chế độ Sáng / Tối" aria-label="Toggle theme">
+        <button id="themeToggle" type="button" title="Toggle light/dark mode" aria-label="Toggle theme">
           <svg id="iconSun" class="w-5 h-5 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
           </svg>
@@ -178,7 +178,7 @@
       <div class="text-xs text-gray-400 py-4 flex flex-col items-center">
         <div class="text-2xl mb-2">📢</div>
         <span class="font-medium text-gray-300 mb-1">160 × 600</span>
-        <span data-i18n="adSideNotice">Banner Quảng cáo sườn trái</span>
+        <span data-i18n="adSideNotice">Skyscraper Banner 160×600</span>
         <a href="mailto:ndtoanst2@gmail.com" class="text-violet-400 text-[10px] mt-2 underline break-all">ndtoanst2@gmail.com</a>
       </div>
       <span class="text-[9px] text-gray-600">TikSnap Ads</span>
@@ -190,7 +190,7 @@
       <div class="text-xs text-gray-400 py-4 flex flex-col items-center">
         <div class="text-2xl mb-2">📢</div>
         <span class="font-medium text-gray-300 mb-1">160 × 600</span>
-        <span data-i18n="adSideNotice">Banner Quảng cáo sườn phải</span>
+        <span data-i18n="adSideNotice">Skyscraper Banner 160×600</span>
         <a href="mailto:ndtoanst2@gmail.com" class="text-violet-400 text-[10px] mt-2 underline break-all">ndtoanst2@gmail.com</a>
       </div>
       <span class="text-[9px] text-gray-600">TikSnap Ads</span>
@@ -205,17 +205,17 @@
       <div class="relative max-w-3xl mx-auto">
         <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet-500/20 border border-violet-500/30 text-violet-300 text-sm font-medium mb-6">
           <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
-          <span data-i18n="heroBadge">Miễn phí · Không logo · Không giới hạn</span>
+          <span data-i18n="heroBadge">Free · No Watermark · Unlimited</span>
         </div>
 
         <h1 class="text-4xl sm:text-5xl font-extrabold leading-tight mb-4">
-          <span data-i18n="heroTitle">Tải Video TikTok</span><br />
+          <span data-i18n="heroTitle">Download TikTok Videos</span><br />
           <span class="bg-gradient-to-r from-violet-400 to-pink-400 bg-clip-text text-transparent" data-i18n="heroTitleHighlight">
-            Không Logo, Miễn Phí
+            No Watermark, Free
           </span>
         </h1>
         <p class="text-gray-400 text-base sm:text-lg mb-8 max-w-xl mx-auto" data-i18n="heroSubtitle">
-          Hỗ trợ TikTok & Douyin, chất lượng HD gốc, không cần đăng ký, không cài ứng dụng.
+          Supports TikTok &amp; Douyin, original HD quality, no registration, no app needed.
         </p>
 
         <!-- ── Input Form ─────────────────────────────────────────────── -->
@@ -225,7 +225,7 @@
               <input
                 id="urlInput"
                 type="url"
-                placeholder="Dán link TikTok hoặc Douyin vào đây..."
+                placeholder="Paste TikTok or Douyin link here..."
                 class="w-full bg-gray-900 border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent text-sm transition-all"
                 autocomplete="off"
                 spellcheck="false"
@@ -235,14 +235,14 @@
               id="downloadBtn"
               class="btn-gradient flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-semibold text-white text-sm whitespace-nowrap transition-all active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed shadow-md w-full sm:w-auto"
             >
-              <span id="btnText" data-i18n="btnDownload">⬇ Tải xuống</span>
+              <span id="btnText" data-i18n="btnDownload">⬇ Download</span>
             </button>
           </div>
 
           <!-- Error Message -->
           <div id="errorMsg" class="hidden mt-4 flex items-center gap-2 text-red-400 text-sm bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-3">
             <span>⚠️</span>
-            <span id="errorText">Lỗi</span>
+            <span id="errorText">Error</span>
           </div>
         </div>
 
@@ -272,7 +272,7 @@
               <div class="flex-1 min-w-0 w-full flex flex-col justify-between space-y-3.5">
                 <div>
                   <h3 id="videoTitle" class="text-white font-bold text-base sm:text-lg leading-snug line-clamp-2 sm:line-clamp-3 mb-1.5">
-                    Video TikTok
+                    TikTok Video
                   </h3>
                   <p id="musicInfo" class="text-violet-300 text-xs flex items-center gap-1.5 hidden">
                     <span>🎵</span> <span id="musicTitle" class="truncate font-medium"></span>
@@ -284,7 +284,7 @@
                   <div class="ad-box bg-white/5 border border-dashed border-white/10 rounded-xl p-2.5 text-center min-h-[60px] flex flex-col items-center justify-center relative">
                     <span class="ad-label text-[9px] tracking-wider font-semibold uppercase text-gray-500 absolute top-1 right-2" data-i18n="adLabel">SPONSORED</span>
                     <div class="text-xs text-gray-400 py-0.5">
-                      <span data-i18n="adResultNotice">🌟 Quảng cáo tài trợ · Đặt banner liên hệ ndtoanst2@gmail.com</span>
+                      <span data-i18n="adResultNotice">🌟 Sponsored Ad Space · Inquire at ndtoanst2@gmail.com</span>
                     </div>
                   </div>
                 </div>
@@ -296,26 +296,26 @@
                     type="button"
                     class="btn-gradient flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl font-bold text-white text-sm shadow-lg shadow-violet-500/20 transition-all active:scale-95 text-center cursor-pointer w-full"
                   >
-                    🎬 <span data-i18n="btnNoWM">Tải Video HD (Không Logo)</span>
+                    🎬 <span data-i18n="btnNoWM">Download HD Video (No Watermark)</span>
                   </button>
                   <button
                     id="btnMP3"
                     type="button"
                     class="flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-bold text-pink-300 text-sm bg-pink-500/10 hover:bg-pink-500/20 border border-pink-500/30 transition-all active:scale-95 text-center cursor-pointer hidden w-full"
                   >
-                    🎵 <span data-i18n="btnMP3">Tải Nhạc MP3 (Chất Lượng Gốc)</span>
+                    🎵 <span data-i18n="btnMP3">Download MP3 Audio (Original Sound)</span>
                   </button>
                 </div>
 
                 <div class="result-bottom-bar pt-3 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs border-t border-white/10">
-                  <span class="text-xs font-medium text-gray-500 dark:text-gray-400">100% Sạch Logo · Tải Trực Tiếp</span>
+                  <span class="text-xs font-medium text-gray-500 dark:text-gray-400" data-i18n="badgeClean">100% Watermark-Free · Direct Download</span>
                   <button
                     id="tryAgainBtn"
                     type="button"
                     class="text-sm sm:text-base font-bold text-violet-400 hover:text-white transition-all underline underline-offset-4 cursor-pointer inline-flex items-center gap-1.5 py-1 px-3 rounded-lg hover:bg-violet-500/10 active:scale-95"
                     data-i18n="tryAgain"
                   >
-                    ← Tải video khác
+                    ← Download another video
                   </button>
                 </div>
               </div>
@@ -331,7 +331,7 @@
       <div class="ad-box bg-white/5 border border-dashed border-white/10 rounded-2xl p-3 text-center min-h-[90px] flex flex-col items-center justify-center relative backdrop-blur-sm">
         <span class="ad-label text-[10px] tracking-wider font-semibold uppercase text-gray-500 absolute top-2 right-3" data-i18n="adLabel">ADVERTISEMENT / SPONSORED</span>
         <div class="text-xs text-gray-400 py-3">
-          <span data-i18n="adTopNotice">📢 Không gian tài trợ &amp; Quảng cáo banner · Liên hệ: </span>
+          <span data-i18n="adTopNotice">📢 Space available for Sponsor &amp; Banner ads · Contact: </span>
           <a href="mailto:ndtoanst2@gmail.com" class="text-violet-400 underline font-medium">ndtoanst2@gmail.com</a>
         </div>
       </div>
@@ -340,22 +340,22 @@
     <!-- ── How To Section ──────────────────────────────────────────────── -->
     <section id="how-to" class="py-16 px-4 border-t border-white/10">
       <div class="max-w-4xl mx-auto">
-        <h2 class="text-2xl font-bold text-center mb-10" data-i18n="howToTitle">Cách tải video TikTok không logo</h2>
+        <h2 class="text-2xl font-bold text-center mb-10" data-i18n="howToTitle">How to download TikTok video without watermark</h2>
         <div class="grid sm:grid-cols-3 gap-6">
           <div class="text-center p-6 bg-white/5 rounded-2xl border border-white/10">
             <div class="w-12 h-12 bg-violet-500/20 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4">📋</div>
-            <h3 class="font-semibold mb-2" data-i18n="step1Title">Bước 1</h3>
-            <p class="text-gray-400 text-sm" data-i18n="step1Desc">Mở TikTok, nhấn <strong class="text-white">Chia sẻ</strong> → <strong class="text-white">Sao chép liên kết</strong></p>
+            <h3 class="font-semibold mb-2" data-i18n="step1Title">Step 1</h3>
+            <p class="text-gray-400 text-sm" data-i18n="step1Desc">Open TikTok, tap <strong class="text-white">Share</strong> → <strong class="text-white">Copy Link</strong></p>
           </div>
           <div class="text-center p-6 bg-white/5 rounded-2xl border border-white/10">
             <div class="w-12 h-12 bg-pink-500/20 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4">📥</div>
-            <h3 class="font-semibold mb-2" data-i18n="step2Title">Bước 2</h3>
-            <p class="text-gray-400 text-sm" data-i18n="step2Desc">Dán link vào ô tìm kiếm phía trên, nhấn nút <strong class="text-white">Tải xuống</strong></p>
+            <h3 class="font-semibold mb-2" data-i18n="step2Title">Step 2</h3>
+            <p class="text-gray-400 text-sm" data-i18n="step2Desc">Paste the link into the search box above, click <strong class="text-white">Download</strong></p>
           </div>
           <div class="text-center p-6 bg-white/5 rounded-2xl border border-white/10">
             <div class="w-12 h-12 bg-green-500/20 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4">✅</div>
-            <h3 class="font-semibold mb-2" data-i18n="step3Title">Bước 3</h3>
-            <p class="text-gray-400 text-sm" data-i18n="step3Desc">Chọn <strong class="text-white">Tải Video HD</strong> hoặc <strong class="text-white">Tải Nhạc MP3</strong> để lưu về máy</p>
+            <h3 class="font-semibold mb-2" data-i18n="step3Title">Step 3</h3>
+            <p class="text-gray-400 text-sm" data-i18n="step3Desc">Choose <strong class="text-white">Download HD Video</strong> or <strong class="text-white">Download MP3</strong></p>
           </div>
         </div>
       </div>
@@ -365,50 +365,50 @@
     <section id="guides" class="py-16 px-4 border-t border-white/10">
       <div class="max-w-4xl mx-auto">
         <div class="text-center mb-10">
-          <h2 class="text-2xl font-bold mb-2" data-i18n="guidesTitle">Hướng Dẫn &amp; Mẹo Hay</h2>
-          <p class="text-gray-400 text-sm" data-i18n="guidesSubtitle">Khám phá các mẹo tải video TikTok không watermark cho từng thiết bị</p>
+          <h2 class="text-2xl font-bold mb-2" data-i18n="guidesTitle">Guides &amp; Tutorials</h2>
+          <p class="text-gray-400 text-sm" data-i18n="guidesSubtitle">Explore handy guides on downloading TikTok clips for every device</p>
         </div>
 
         <div class="grid sm:grid-cols-3 gap-6">
           <!-- Guide 1: iPhone -->
-          <a id="guideLinkIphone" href="/huong-dan/tai-video-tiktok-tren-iphone" class="group block p-6 bg-white/5 hover:bg-white/10 rounded-2xl border border-white/10 transition-all hover:-translate-y-1">
+          <a id="guideLinkIphone" href="/guides/how-to-download-tiktok-videos-on-iphone" class="group block p-6 bg-white/5 hover:bg-white/10 rounded-2xl border border-white/10 transition-all hover:-translate-y-1">
             <div class="text-3xl mb-3">📱</div>
             <h3 class="font-bold text-white group-hover:text-violet-400 transition-colors text-base mb-2" data-i18n="guide1Title">
-              Tải TikTok trên iPhone
+              TikTok on iPhone
             </h3>
             <p class="text-gray-400 text-xs leading-relaxed mb-4" data-i18n="guide1Desc">
-              Cách lưu video TikTok sạch logo trực tiếp vào Cuộn camera iPhone qua Safari không cần cài app.
+              How to save watermark-free TikTok videos directly to iPhone Camera Roll via Safari without extra apps.
             </p>
             <span class="text-xs font-semibold text-violet-400 group-hover:underline flex items-center gap-1" data-i18n="readMore">
-              Xem hướng dẫn &rarr;
+              Read guide &rarr;
             </span>
           </a>
 
           <!-- Guide 2: Android -->
-          <a id="guideLinkAndroid" href="/huong-dan/tai-video-tiktok-tren-android" class="group block p-6 bg-white/5 hover:bg-white/10 rounded-2xl border border-white/10 transition-all hover:-translate-y-1">
+          <a id="guideLinkAndroid" href="/guides/how-to-download-tiktok-videos-on-android" class="group block p-6 bg-white/5 hover:bg-white/10 rounded-2xl border border-white/10 transition-all hover:-translate-y-1">
             <div class="text-3xl mb-3">🤖</div>
             <h3 class="font-bold text-white group-hover:text-violet-400 transition-colors text-base mb-2" data-i18n="guide2Title">
-              Tải TikTok trên Android
+              TikTok on Android
             </h3>
             <p class="text-gray-400 text-xs leading-relaxed mb-4" data-i18n="guide2Desc">
-              Hướng dẫn lưu video Full HD vào Bộ sưu tập trên Samsung, Xiaomi, Oppo không cần file APK lạ.
+              Tutorial to save original Full HD clips into Android Gallery (Samsung, Xiaomi, Oppo) with zero APK risk.
             </p>
             <span class="text-xs font-semibold text-violet-400 group-hover:underline flex items-center gap-1" data-i18n="readMore">
-              Xem hướng dẫn &rarr;
+              Read guide &rarr;
             </span>
           </a>
 
           <!-- Guide 3: MP3 -->
-          <a id="guideLinkMP3" href="/huong-dan/cach-tach-nhac-tiktok-sang-mp3" class="group block p-6 bg-white/5 hover:bg-white/10 rounded-2xl border border-white/10 transition-all hover:-translate-y-1">
+          <a id="guideLinkMP3" href="/guides/how-to-convert-tiktok-to-mp3" class="group block p-6 bg-white/5 hover:bg-white/10 rounded-2xl border border-white/10 transition-all hover:-translate-y-1">
             <div class="text-3xl mb-3">🎵</div>
             <h3 class="font-bold text-white group-hover:text-pink-400 transition-colors text-base mb-2" data-i18n="guide3Title">
-              Tách Nhạc Nền MP3
+              Extract MP3 Sound
             </h3>
             <p class="text-gray-400 text-xs leading-relaxed mb-4" data-i18n="guide3Desc">
-              Cách trích xuất âm thanh TikTok gốc để làm nhạc chuông điện thoại hoặc dựng video cực chuẩn.
+              How to extract TikTok background music and sounds to use as high-quality phone ringtones or video audio.
             </p>
             <span class="text-xs font-semibold text-pink-400 group-hover:underline flex items-center gap-1" data-i18n="readMore">
-              Xem hướng dẫn &rarr;
+              Read guide &rarr;
             </span>
           </a>
         </div>
@@ -420,7 +420,7 @@
       <div class="ad-box bg-white/5 border border-dashed border-white/10 rounded-2xl p-4 text-center min-h-[90px] flex flex-col items-center justify-center relative backdrop-blur-sm">
         <span class="ad-label text-[10px] tracking-wider font-semibold uppercase text-gray-500 absolute top-2 right-3" data-i18n="adLabel">ADVERTISEMENT</span>
         <div class="text-xs text-gray-400 py-2">
-          <span data-i18n="adBottomNotice">📢 Quảng cáo đối tác · Hợp tác đặt banner: </span>
+          <span data-i18n="adBottomNotice">📢 Partner Advertisement · Banner sponsorship: </span>
           <a href="mailto:ndtoanst2@gmail.com" class="text-violet-400 underline font-medium">ndtoanst2@gmail.com</a>
         </div>
       </div>
@@ -429,35 +429,35 @@
     <!-- ── FAQ Section ────────────────────────────────────────────────── -->
     <section id="faq" class="py-16 px-4 border-t border-white/10">
       <div class="max-w-3xl mx-auto">
-        <h2 class="text-2xl font-bold text-center mb-10" data-i18n="faqTitle">Câu hỏi thường gặp</h2>
+        <h2 class="text-2xl font-bold text-center mb-10" data-i18n="faqTitle">Frequently Asked Questions</h2>
         <div class="space-y-4">
           <details class="bg-white/5 border border-white/10 rounded-xl p-5 group">
             <summary class="font-semibold cursor-pointer flex justify-between items-center">
-              <span data-i18n="faq1Q">Tải video TikTok có mất phí không?</span>
+              <span data-i18n="faq1Q">Is downloading TikTok videos free?</span>
               <span class="text-gray-400 group-open:rotate-180 transition-transform">▼</span>
             </summary>
-            <p class="text-gray-400 text-sm mt-3" data-i18n="faq1A">Hoàn toàn miễn phí, không giới hạn số lượt tải, không cần đăng ký tài khoản.</p>
+            <p class="text-gray-400 text-sm mt-3" data-i18n="faq1A">Yes, 100% free with unlimited downloads and no account registration needed.</p>
           </details>
           <details class="bg-white/5 border border-white/10 rounded-xl p-5 group">
             <summary class="font-semibold cursor-pointer flex justify-between items-center">
-              <span data-i18n="faq2Q">Có tải được video Douyin không?</span>
+              <span data-i18n="faq2Q">Does it support Douyin (Chinese TikTok)?</span>
               <span class="text-gray-400 group-open:rotate-180 transition-transform">▼</span>
             </summary>
-            <p class="text-gray-400 text-sm mt-3" data-i18n="faq2A">Có! TikSnap hỗ trợ đầy đủ cả TikTok quốc tế và Douyin (TikTok phiên bản Trung Quốc).</p>
+            <p class="text-gray-400 text-sm mt-3" data-i18n="faq2A">Yes! TikSnap fully supports international TikTok and Chinese Douyin.</p>
           </details>
           <details class="bg-white/5 border border-white/10 rounded-xl p-5 group">
             <summary class="font-semibold cursor-pointer flex justify-between items-center">
-              <span data-i18n="faq3Q">Video tải về có thật sự không có logo không?</span>
+              <span data-i18n="faq3Q">Are the downloaded videos truly watermark-free?</span>
               <span class="text-gray-400 group-open:rotate-180 transition-transform">▼</span>
             </summary>
-            <p class="text-gray-400 text-sm mt-3" data-i18n="faq3A">Có. Chúng tôi lấy trực tiếp phiên bản gốc không watermark từ máy chủ TikTok/Douyin. Đây là link gốc của chính ByteDance chứ không phải qua xử lý chỉnh sửa.</p>
+            <p class="text-gray-400 text-sm mt-3" data-i18n="faq3A">Yes. We fetch the original clean video stream directly from ByteDance servers without any watermarks.</p>
           </details>
           <details class="bg-white/5 border border-white/10 rounded-xl p-5 group">
             <summary class="font-semibold cursor-pointer flex justify-between items-center">
-              <span data-i18n="faq4Q">TikSnap có lưu video của tôi không?</span>
+              <span data-i18n="faq4Q">Does TikSnap store my downloaded videos?</span>
               <span class="text-gray-400 group-open:rotate-180 transition-transform">▼</span>
             </summary>
-            <p class="text-gray-400 text-sm mt-3" data-i18n="faq4A">Không. TikSnap không lưu trữ bất kỳ video nào. Video được tải thẳng từ máy chủ TikTok/Douyin về thiết bị của bạn. Chúng tôi chỉ đóng vai trò trung gian cung cấp liên kết.</p>
+            <p class="text-gray-400 text-sm mt-3" data-i18n="faq4A">No. TikSnap does not host or store any videos. All downloads stream directly to your device.</p>
           </details>
         </div>
       </div>
@@ -467,14 +467,14 @@
   <!-- ── Footer ─────────────────────────────────────────────────────────── -->
   <footer class="border-t border-white/10 py-8 px-4 text-center text-sm text-gray-500">
     <p class="mb-3">
-      <a href="/privacy" class="hover:text-white transition-colors mx-3" data-i18n="footerPrivacy">Chính sách bảo mật</a>
-      <a href="/terms" class="hover:text-white transition-colors mx-3" data-i18n="footerTerms">Điều khoản sử dụng</a>
+      <a href="/privacy" class="hover:text-white transition-colors mx-3" data-i18n="footerPrivacy">Privacy Policy</a>
+      <a href="/terms" class="hover:text-white transition-colors mx-3" data-i18n="footerTerms">Terms of Service</a>
       <a href="/dmca" class="hover:text-white transition-colors mx-3" data-i18n="footerDmca">DMCA</a>
       <a href="/stats" class="hover:text-violet-400 transition-colors mx-3 text-xs font-medium text-slate-400">● Live Status</a>
     </p>
     <p class="text-xs text-gray-600" data-i18n="footerDisclaimer">
       © 2026 TikSnap · tiksnap.space &nbsp;·&nbsp;
-      Dịch vụ này không liên kết với ByteDance, TikTok hoặc Douyin. Chúng tôi không lưu trữ video trên máy chủ.
+      Not affiliated with ByteDance, TikTok, or Douyin. We do not store videos on our server.
     </p>
   </footer>
 
@@ -482,7 +482,7 @@
   <div id="downloadModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
     <div class="bg-gray-900 border border-white/15 rounded-3xl max-w-md w-full p-6 text-center shadow-2xl relative modal-container transition-all">
       <!-- Nút đóng Modal -->
-      <button id="modalCloseBtn" type="button" class="absolute top-4 right-4 text-gray-400 hover:text-white p-1 rounded-lg text-lg transition-colors" title="Close / Đóng">
+      <button id="modalCloseBtn" type="button" class="absolute top-4 right-4 text-gray-400 hover:text-white p-1 rounded-lg text-lg transition-colors" title="Close">
         ✕
       </button>
 
@@ -490,12 +490,12 @@
       <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-violet-500/20 text-violet-300 text-2xl mb-3">
         ⏳
       </div>
-      <h3 id="modalTitle" class="text-lg font-bold text-white mb-1" data-i18n="modalTitle">Đang tạo đường link tải...</h3>
-      <p id="modalSubtitle" class="text-xs text-gray-400 mb-4" data-i18n="modalWait">Vui lòng chờ giây lát trong khi chúng tôi kết nối trực tiếp đến máy chủ gốc</p>
+      <h3 id="modalTitle" class="text-lg font-bold text-white mb-1" data-i18n="modalTitle">Preparing your download...</h3>
+      <p id="modalSubtitle" class="text-xs text-gray-400 mb-4" data-i18n="modalWait">Connecting directly to original CDN server, please wait a moment</p>
 
       <!-- Đếm ngược 3 giây -->
       <div id="modalCountdownBox" class="flex items-center justify-center gap-2 mb-4">
-        <span class="text-xs text-gray-400" data-i18n="modalCounting">Link tải sẵn sàng sau:</span>
+        <span class="text-xs text-gray-400" data-i18n="modalCounting">Download link ready in:</span>
         <span id="countdownNumber" class="text-base font-extrabold text-violet-400 bg-violet-500/10 border border-violet-500/30 px-3 py-0.5 rounded-full">3s</span>
       </div>
 
@@ -505,8 +505,8 @@
           <span class="ad-label text-[9px] tracking-wider font-semibold uppercase text-gray-500 absolute top-2 right-3" data-i18n="adLabel">SPONSORED</span>
           <div class="text-xs text-gray-400 py-2">
             <div class="text-2xl mb-1">🎁</div>
-            <p class="font-semibold text-gray-300 mb-1" data-i18n="modalAdHeading">Không gian Banner Tài trợ</p>
-            <p class="text-[11px] text-gray-500" data-i18n="modalAdText">Vị trí tương tác cao nhất trước khi tải file</p>
+            <p class="font-semibold text-gray-300 mb-1" data-i18n="modalAdHeading">Sponsored Partner Advertisement</p>
+            <p class="text-[11px] text-gray-500" data-i18n="modalAdText">High engagement banner slot before download</p>
             <a href="mailto:ndtoanst2@gmail.com" class="text-violet-400 text-xs underline font-medium mt-1 inline-block">ndtoanst2@gmail.com</a>
           </div>
         </div>
@@ -515,7 +515,7 @@
       <!-- Nút Tải ngay (Sáng lên sau khi đếm xong) -->
       <div class="mt-4">
         <button id="modalDownloadBtn" type="button" class="btn-gradient w-full flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl font-bold text-white text-sm shadow-lg transition-all active:scale-95 cursor-pointer">
-          <span id="modalBtnText" data-i18n="modalBtnDownload">⬇ Bấm vào đây để Nhận file ngay</span>
+          <span id="modalBtnText" data-i18n="modalBtnDownload">⬇ Click here to Get Your File</span>
         </button>
       </div>
     </div>
