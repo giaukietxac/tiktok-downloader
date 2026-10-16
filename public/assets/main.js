@@ -1115,6 +1115,7 @@ function startDownloadCountdown(url, filename) {
 
   if (modalDownloadBtn) {
     modalDownloadBtn.classList.add("opacity-50", "pointer-events-none");
+    modalDownloadBtn.classList.remove("cursor-pointer", "shadow-xl", "shadow-violet-500/25");
   }
   if (modalBtnText) {
     modalBtnText.textContent = dict.modalWait || "Đang kết nối...";
@@ -1137,13 +1138,13 @@ function startDownloadCountdown(url, filename) {
 
       if (modalDownloadBtn) {
         modalDownloadBtn.classList.remove("opacity-50", "pointer-events-none");
+        modalDownloadBtn.classList.add("cursor-pointer", "shadow-xl", "shadow-violet-500/25");
       }
       if (modalBtnText) {
         modalBtnText.textContent = dict.modalBtnDownload || "⬇ Bấm vào đây để Nhận file ngay";
       }
 
-      // Tự động kích hoạt tải trực tiếp về máy người dùng
-      triggerDirectFileDownload(pendingDownloadUrl, pendingDownloadFilename);
+      // Đã sẵn sàng: Chờ khách bấm vào nút mới tải file về máy
     }
   }, 1000);
 }
@@ -1151,6 +1152,9 @@ function startDownloadCountdown(url, filename) {
 function closeDownloadModal() {
   if (countdownTimer) clearInterval(countdownTimer);
   if (downloadModal) downloadModal.classList.add("hidden");
+  if (modalDownloadBtn) {
+    modalDownloadBtn.classList.remove("shadow-xl", "shadow-violet-500/25");
+  }
   isDownloadingFile = false;
 }
 
