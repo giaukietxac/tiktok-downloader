@@ -495,6 +495,9 @@ app.get("/guides/how-to-download-tiktok-videos-on-android", (_req, res) => {
 app.get("/guides/how-to-convert-tiktok-to-mp3", (_req, res) => {
   res.sendFile(path.join(__dirname, "public", "guides", "how-to-convert-tiktok-to-mp3.html"));
 });
+app.get("/guides/how-to-download-douyin-videos-without-watermark", (_req, res) => {
+  res.sendFile(path.join(__dirname, "public", "guides", "how-to-download-douyin-videos-without-watermark.html"));
+});
 
 // ─── Chuyên mục bài viết SEO Tiếng Việt (Vietnamese Guides) ──────────────────
 app.get("/huong-dan/tai-video-tiktok-tren-iphone", (_req, res) => {
@@ -505,6 +508,9 @@ app.get("/huong-dan/tai-video-tiktok-tren-android", (_req, res) => {
 });
 app.get("/huong-dan/cach-tach-nhac-tiktok-sang-mp3", (_req, res) => {
   res.sendFile(path.join(__dirname, "public", "huong-dan", "cach-tach-nhac-tiktok-sang-mp3.html"));
+});
+app.get("/huong-dan/cach-tai-video-douyin-khong-logo", (_req, res) => {
+  res.sendFile(path.join(__dirname, "public", "huong-dan", "cach-tai-video-douyin-khong-logo.html"));
 });
 
 // ─── Fallback → index.html ───────────────────────────────────────────────────
