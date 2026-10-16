@@ -906,9 +906,28 @@ function renderLanguageMenu() {
   langMenu.querySelectorAll("[data-lang-code]").forEach((btn) => {
     btn.addEventListener("click", () => {
       const code = btn.getAttribute("data-lang-code");
-      setLanguage(code);
       closeLanguageMenu();
       trackEvent("change_language", { language: code });
+
+      // Chuyển hướng URL chuẩn SEO cho các sub-folder quốc tế
+      if (code === "es" && !window.location.pathname.startsWith("/es")) {
+        window.location.href = "/es/";
+        return;
+      }
+      if (code === "pt" && !window.location.pathname.startsWith("/pt")) {
+        window.location.href = "/pt/";
+        return;
+      }
+      if (code === "id" && !window.location.pathname.startsWith("/id")) {
+        window.location.href = "/id/";
+        return;
+      }
+      if (code === "en" && (window.location.pathname.startsWith("/es") || window.location.pathname.startsWith("/pt") || window.location.pathname.startsWith("/id"))) {
+        window.location.href = "/";
+        return;
+      }
+
+      setLanguage(code);
     });
   });
 }
@@ -1000,6 +1019,20 @@ function setLanguage(lang) {
 
 // Khởi tạo ngôn ngữ ban đầu
 function initLanguage() {
+  const path = window.location.pathname;
+  if (path.startsWith("/es")) {
+    setLanguage("es");
+    return;
+  }
+  if (path.startsWith("/pt")) {
+    setLanguage("pt");
+    return;
+  }
+  if (path.startsWith("/id")) {
+    setLanguage("id");
+    return;
+  }
+
   const saved = localStorage.getItem("lang");
   if (saved && TRANSLATIONS[saved]) {
     setLanguage(saved);

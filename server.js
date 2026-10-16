@@ -513,6 +513,11 @@ app.get("/huong-dan/cach-tai-video-douyin-khong-logo", (_req, res) => {
   res.sendFile(path.join(__dirname, "public", "huong-dan", "cach-tai-video-douyin-khong-logo.html"));
 });
 
+// ─── Sub-folders Quốc tế (International SEO Landing Pages) ───────────────────
+app.get(["/es", "/es/{*splat}"], (_req, res) => res.sendFile(path.join(__dirname, "public", "es", "index.html")));
+app.get(["/pt", "/pt/{*splat}"], (_req, res) => res.sendFile(path.join(__dirname, "public", "pt", "index.html")));
+app.get(["/id", "/id/{*splat}"], (_req, res) => res.sendFile(path.join(__dirname, "public", "id", "index.html")));
+
 // ─── Fallback → index.html ───────────────────────────────────────────────────
 app.get("/{*splat}", (_req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
 

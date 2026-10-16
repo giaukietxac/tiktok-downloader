@@ -1,12 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <!-- ── 1. Trang chủ Toàn cầu (Global English) ────────────────────────── -->
   <url>
     <loc>https://tiksnap.space/</loc>
     <lastmod>2026-10-16</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tiksnap.space/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://tiksnap.space/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tiksnap.space/es/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://tiksnap.space/pt/" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://tiksnap.space/id/" />
   </url>
-  <!-- English SEO Guides -->
+
+  <!-- ── 2. Trang Sub-folder Tây Ban Nha & Mỹ Latinh (Español) ─────────── -->
+  <url>
+    <loc>https://tiksnap.space/es/</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tiksnap.space/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://tiksnap.space/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tiksnap.space/es/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://tiksnap.space/pt/" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://tiksnap.space/id/" />
+  </url>
+
+  <!-- ── 3. Trang Sub-folder Bồ Đào Nha & Brazil (Português) ────────────── -->
+  <url>
+    <loc>https://tiksnap.space/pt/</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tiksnap.space/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://tiksnap.space/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tiksnap.space/es/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://tiksnap.space/pt/" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://tiksnap.space/id/" />
+  </url>
+
+  <!-- ── 4. Trang Sub-folder Indonesia (Bahasa Indonesia) ──────────────── -->
+  <url>
+    <loc>https://tiksnap.space/id/</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tiksnap.space/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://tiksnap.space/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tiksnap.space/es/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://tiksnap.space/pt/" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://tiksnap.space/id/" />
+  </url>
+
+  <!-- ── English SEO Guides ────────────────────────────────────────────── -->
   <url>
     <loc>https://tiksnap.space/guides/how-to-download-douyin-videos-without-watermark</loc>
     <lastmod>2026-10-16</lastmod>
@@ -31,7 +78,8 @@
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
-  <!-- Vietnamese SEO Guides -->
+
+  <!-- ── Vietnamese SEO Guides ─────────────────────────────────────────── -->
   <url>
     <loc>https://tiksnap.space/huong-dan/cach-tai-video-douyin-khong-logo</loc>
     <lastmod>2026-10-16</lastmod>
@@ -56,7 +104,8 @@
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
-  <!-- Legal Pages -->
+
+  <!-- ── Legal Pages ───────────────────────────────────────────────────── -->
   <url>
     <loc>https://tiksnap.space/privacy</loc>
     <lastmod>2026-10-16</lastmod>
