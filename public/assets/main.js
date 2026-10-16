@@ -1206,9 +1206,13 @@ function setLoading(state) {
 }
 
 // ── Hiển thị kết quả ─────────────────────────────────────────────────────────
+// ── Hiển thị kết quả ─────────────────────────────────────────────────────────
 function showResult(data) {
-  thumbnail.src = data.thumbnail || "";
-  videoTitle.textContent = data.title || "Video TikTok";
+  if (thumbnail) {
+    thumbnail.style.display = "block";
+    thumbnail.src = data.thumbnail || "/assets/og-image.png";
+  }
+  if (videoTitle) videoTitle.textContent = data.title || "Video TikTok";
 
   if (data.musicTitle) {
     musicTitle.textContent = data.musicTitle;
@@ -1221,7 +1225,6 @@ function showResult(data) {
   if (data.noWatermark) {
     btnNoWM.dataset.downloadUrl = data.noWatermark;
     btnNoWM.dataset.downloadFilename = "tiktok-video-hd.mp4";
-    btnNoWM.href = data.noWatermark;
     btnNoWM.classList.remove("hidden");
   } else {
     btnNoWM.classList.add("hidden");
@@ -1231,7 +1234,6 @@ function showResult(data) {
   if (data.music) {
     btnMP3.dataset.downloadUrl = data.music;
     btnMP3.dataset.downloadFilename = "tiktok-audio.mp3";
-    btnMP3.href = data.music;
     btnMP3.classList.remove("hidden");
   } else {
     btnMP3.classList.add("hidden");
@@ -1245,6 +1247,7 @@ function reset() {
   resultSection.classList.add("hidden");
   if (musicInfo) musicInfo.classList.add("hidden");
   if (btnMP3) btnMP3.classList.add("hidden");
+  if (thumbnail) thumbnail.src = "";
   hideError();
   urlInput.value = "";
   urlInput.focus();
