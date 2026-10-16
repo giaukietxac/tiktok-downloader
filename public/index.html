@@ -248,7 +248,7 @@
 
         <!-- ── Result Section (HIỆN NGAY DƯỚI Ô TẢI XUỐNG) ─────────────── -->
         <div id="resultSection" class="hidden mt-6 text-left">
-          <div class="bg-gradient-to-b from-gray-900/95 to-gray-900/85 border border-white/15 rounded-3xl p-4 sm:p-6 backdrop-blur-md shadow-2xl">
+          <div id="resultCard" class="result-card bg-gray-900/95 border border-white/15 rounded-3xl p-4 sm:p-6 backdrop-blur-md shadow-2xl">
             <div class="flex flex-col sm:flex-row gap-5 items-center sm:items-start">
               
               <!-- Cột Trái: Ảnh Thumbnail Video -->
@@ -307,9 +307,14 @@
                   </button>
                 </div>
 
-                <div class="pt-2 flex items-center justify-between text-xs text-gray-400 border-t border-white/10">
-                  <span class="text-[11px] text-gray-500">100% Sạch Logo · Tải Trực Tiếp</span>
-                  <button id="tryAgainBtn" type="button" class="text-violet-400 hover:text-white transition-colors underline font-medium cursor-pointer" data-i18n="tryAgain">
+                <div class="result-bottom-bar pt-3 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs border-t border-white/10">
+                  <span class="text-xs font-medium text-gray-500 dark:text-gray-400">100% Sạch Logo · Tải Trực Tiếp</span>
+                  <button
+                    id="tryAgainBtn"
+                    type="button"
+                    class="text-sm sm:text-base font-bold text-violet-400 hover:text-white transition-all underline underline-offset-4 cursor-pointer inline-flex items-center gap-1.5 py-1 px-3 rounded-lg hover:bg-violet-500/10 active:scale-95"
+                    data-i18n="tryAgain"
+                  >
                     ← Tải video khác
                   </button>
                 </div>

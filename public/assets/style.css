@@ -279,3 +279,60 @@ html.light #downloadModal #modalCloseBtn {
 html.light #downloadModal #modalCloseBtn:hover {
   color: #0F172A !important;
 }
+
+/* ─── Result Card Dark / Light Theme & Contrast ─────── */
+#resultCard {
+  background-color: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+  transition: all 0.25s ease;
+}
+
+#videoTitle {
+  color: #FFFFFF !important;
+  font-size: 1.125rem;
+  line-height: 1.4;
+  font-weight: 700;
+}
+
+#tryAgainBtn {
+  font-size: 1.05rem !important; /* To rõ ràng */
+  font-weight: 700 !important;
+  color: #A78BFA !important;
+  transition: all 0.2s ease;
+}
+#tryAgainBtn:hover {
+  color: #DDD6FE !important;
+  transform: translateX(-3px);
+}
+
+/* Light Mode Overrides for Result Card */
+html.light #resultCard {
+  background-color: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04) !important;
+}
+
+html.light #videoTitle {
+  color: #0F172A !important; /* Đen đậm sắc nét trên nền trắng, tuyệt đối không bị chìm */
+}
+
+html.light #resultCard .result-bottom-bar {
+  border-color: #E2E8F0 !important;
+}
+
+html.light #resultCard .result-bottom-bar span {
+  color: #64748B !important;
+}
+
+html.light #ad-result .ad-box {
+  background-color: #F8FAFC !important;
+  border-color: #E2E8F0 !important;
+}
+
+html.light #tryAgainBtn {
+  color: #7C3AED !important; /* Tím đậm nổi bật tương phản cao */
+}
+html.light #tryAgainBtn:hover {
+  color: #6D28D9 !important;
+}
