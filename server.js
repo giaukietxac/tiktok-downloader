@@ -14,6 +14,19 @@ try {
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// ─── Middleware & Security Headers ───────────────────────────────────────────
+app.use((req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "SAMEORIGIN");
+  res.setHeader("X-XSS-Protection", "1; mode=block");
+  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+  res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+  if (req.secure || req.headers["x-forwarded-proto"] === "https") {
+    res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
+  }
+  next();
+});
+
 // ─── Middleware ─────────────────────────────────────────────────────────────
 app.use(cors());
 app.use(express.json());
@@ -484,6 +497,17 @@ app.get("/stats", (_req, res) => res.sendFile(path.join(__dirname, "public", "st
 app.get("/privacy", (_req, res) => res.sendFile(path.join(__dirname, "public", "privacy.html")));
 app.get("/terms",   (_req, res) => res.sendFile(path.join(__dirname, "public", "terms.html")));
 app.get("/dmca",    (_req, res) => res.sendFile(path.join(__dirname, "public", "dmca.html")));
+app.get(["/abuse", "/report-abuse"], (_req, res) => res.redirect("/dmca"));
+app.get(["/.well-known/security.txt", "/security.txt"], (_req, res) => {
+  res.type("text/plain").send(
+`Contact: mailto:ndtoanst2@gmail.com
+Expires: 2027-12-31T23:59:59.000Z
+Preferred-Languages: en, vi
+Canonical: https://tiksnap.space/.well-known/security.txt
+Policy: https://tiksnap.space/dmca
+`
+  );
+});
 
 // ─── Chuyên mục bài viết SEO Quốc tế (English Guides) ────────────────────────
 app.get("/guides/how-to-download-tiktok-videos-on-iphone", (_req, res) => {

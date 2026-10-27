@@ -1,3 +1,11 @@
 node_modules/
 .env
+.env.*
 npm-debug.log*
+
+# Google API Credentials & Tokens
+ga-credentials.json
+*credentials*.json
+*client_secret*.json
+token.json
+
