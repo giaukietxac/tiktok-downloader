@@ -1332,12 +1332,20 @@ function reset() {
 }
 
 // ── Validate URL phía client ─────────────────────────────────────────────────
+function extractFirstUrl(text) {
+  if (!text || typeof text !== "string") return "";
+  const match = text.match(/https?:\/\/[^\s]+/i);
+  return match ? match[0] : text.trim();
+}
+
 function looksLikeTikTokUrl(url) {
   try {
-    const u = new URL(url.trim());
+    const cleanUrl = extractFirstUrl(url);
+    const u = new URL(cleanUrl);
     return [
       "tiktok.com",
       "douyin.com",
+      "iesdouyin.com",
     ].some((d) => u.hostname === d || u.hostname.endsWith("." + d));
   } catch {
     return false;
@@ -1349,7 +1357,8 @@ async function handleDownload() {
   if (isLoading) return;
 
   const dict = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
-  const url = urlInput.value.trim();
+  const rawInput = urlInput.value.trim();
+  const url = extractFirstUrl(rawInput);
   hideError();
   resultSection.classList.add("hidden");
 

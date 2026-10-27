@@ -119,18 +119,121 @@ setInterval(() => {
   }
 }, 5 * 60 * 1000);
 
+// ─── Helper: Tự động lọc link từ văn bản chia sẻ Douyin/TikTok ──────────────
+function extractFirstUrl(text) {
+  if (!text || typeof text !== "string") return "";
+  const match = text.match(/https?:\/\/[^\s]+/i);
+  return match ? match[0] : text.trim();
+}
+
 // ─── Validate URL ───────────────────────────────────────────────────────────
 function isValidTikTokUrl(url) {
   try {
-    const u = new URL(url);
+    const raw = extractFirstUrl(url);
+    const u = new URL(raw);
     const validHosts = [
       "tiktok.com", "www.tiktok.com", "vm.tiktok.com",
       "vt.tiktok.com", "m.tiktok.com",
-      "douyin.com", "www.douyin.com",
+      "douyin.com", "www.douyin.com", "v.douyin.com", "iesdouyin.com"
     ];
     return validHosts.some((h) => u.hostname === h || u.hostname.endsWith("." + h));
   } catch {
     return false;
+  }
+}
+
+// ─── Bóc tách Douyin API chuyên dụng (Douyin Engine) ────────────────────────
+let dtkSessionCookie = null;
+let dtkSessionExpiresAt = 0;
+
+async function getDouyinSession() {
+  if (dtkSessionCookie && Date.now() < dtkSessionExpiresAt) {
+    return dtkSessionCookie;
+  }
+  try {
+    const demoRes = await fetch("https://api.douyin.wtf/api/v1/auth/demo", {
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!demoRes.ok) return null;
+    const demoData = await demoRes.json();
+    const { username, password } = demoData?.data || {};
+    if (!username || !password) return null;
+
+    const loginRes = await fetch("https://api.douyin.wtf/api/v1/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!loginRes.ok) return null;
+    const setCookie = loginRes.headers.get("set-cookie");
+    if (setCookie) {
+      dtkSessionCookie = setCookie.split(";")[0];
+      dtkSessionExpiresAt = Date.now() + 24 * 60 * 60 * 1000;
+      return dtkSessionCookie;
+    }
+  } catch (err) {
+    console.error("[Douyin Auth Error]", err.message);
+  }
+  return null;
+}
+
+async function extractDouyin(url) {
+  try {
+    let cookie = await getDouyinSession();
+    if (!cookie) return null;
+
+    let res = await fetch("https://api.douyin.wtf/api/v1/parse?wait=18", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: cookie,
+      },
+      body: JSON.stringify({ url }),
+      signal: AbortSignal.timeout(25000),
+    });
+
+    if (res.status === 401) {
+      dtkSessionCookie = null;
+      cookie = await getDouyinSession();
+      if (!cookie) return null;
+      res = await fetch("https://api.douyin.wtf/api/v1/parse?wait=18", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: cookie,
+        },
+        body: JSON.stringify({ url }),
+        signal: AbortSignal.timeout(25000),
+      });
+    }
+
+    if (!res.ok) return null;
+    const json = await res.json();
+    if (!json.success || !json.data) return null;
+
+    const d = json.data;
+    const videoUrl = d.media?.video?.url || (d.media?.video?.urls && d.media.video.urls[0]) || null;
+    if (!videoUrl) return null;
+
+    const coverUrl = (d.media?.covers && d.media.covers[0]?.url) || null;
+    const title = d.description || d.title || "Video Douyin";
+
+    return {
+      title,
+      thumbnail: coverUrl,
+      noWatermark: videoUrl,
+      withWatermark: videoUrl,
+      music: d.music?.play_url || null,
+      musicInfo: d.music ? {
+        title: d.music.title || "Original Sound",
+        author: d.music.author || "",
+        duration: d.music.duration_ms ? Math.round(d.music.duration_ms / 1000) : null,
+      } : null,
+    };
+  } catch (err) {
+    console.error("[Douyin Extract Error]", err.message);
+    return null;
   }
 }
 
@@ -261,7 +364,7 @@ app.post("/api/download", async (req, res) => {
     return res.status(400).json({ success: false, error: "Vui lòng cung cấp đường link TikTok." });
   }
 
-  const trimmed = url.trim();
+  const trimmed = extractFirstUrl(url);
   const isDouyin = trimmed.includes("douyin.com") || trimmed.includes("iesdouyin.com");
   const platform = isDouyin ? "douyin" : "tiktok";
 
@@ -329,15 +432,30 @@ app.post("/api/download", async (req, res) => {
   systemStats.cacheMisses++;
 
   try {
-    // 3. Gọi nguồn chính (TikWM API)
-    let data = await extractViaTikWM(trimmed);
-    let usedSource = "tikwm";
+    let data = null;
+    let usedSource = "";
 
-    // 4. Nếu TikWM lỗi, tự động chuyển sang nguồn dự phòng
-    if (!data || !data.noWatermark) {
-      console.log("[TikWM] Không trích xuất được, chuyển sang nguồn dự phòng...");
-      data = await extractViaFallback(trimmed);
-      usedSource = "fallback";
+    if (isDouyin) {
+      console.log(`[Douyin] Bóc tách qua Douyin Engine chuyên dụng...`);
+      data = await extractDouyin(trimmed);
+      usedSource = "douyin-engine";
+
+      if (!data || !data.noWatermark) {
+        console.log(`[Douyin] Douyin Engine lỗi, thử fallback qua TikWM...`);
+        data = await extractViaTikWM(trimmed);
+        usedSource = "tikwm";
+      }
+    } else {
+      // 3. Với TikTok: Gọi nguồn chính (TikWM API)
+      data = await extractViaTikWM(trimmed);
+      usedSource = "tikwm";
+
+      // 4. Nếu TikWM lỗi, tự động chuyển sang nguồn dự phòng
+      if (!data || !data.noWatermark) {
+        console.log("[TikWM] Không trích xuất được, chuyển sang nguồn dự phòng...");
+        data = await extractViaFallback(trimmed);
+        usedSource = "fallback";
+      }
     }
 
     if (!data || !data.noWatermark) {
@@ -402,10 +520,14 @@ app.get("/proxy", async (req, res) => {
   if (!url) return res.status(400).send("Missing url");
 
   try {
-    const upstream = await fetch(decodeURIComponent(url), {
+    const targetUrl = decodeURIComponent(url);
+    const isDouyinMedia = targetUrl.includes("douyin") || targetUrl.includes("zjcdn") || targetUrl.includes("bytegos");
+    const referer = isDouyinMedia ? "https://www.douyin.com/" : "https://www.tiktok.com/";
+
+    const upstream = await fetch(targetUrl, {
       headers: {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        "Referer": "https://www.tiktok.com/",
+        "Referer": referer,
       },
       signal: AbortSignal.timeout(30000),
     });
