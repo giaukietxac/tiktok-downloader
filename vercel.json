@@ -1,15 +1,10 @@
 {
   "version": 2,
   "cleanUrls": true,
-  "functions": {
-    "api/index.js": {
-      "includeFiles": "public/**"
-    }
-  },
   "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "/api/index.js"
+      "destination": "/api"
     }
   ]
 }
