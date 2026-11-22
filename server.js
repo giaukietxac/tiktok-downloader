@@ -668,9 +668,13 @@ app.get(["/id", "/id/{*splat}"], (_req, res) => res.sendFile(path.join(__dirname
 app.get("/{*splat}", (_req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
 
 // ─── Start ───────────────────────────────────────────────────────────────────
-app.listen(PORT, () => {
-  console.log(`\n🚀 TikSnap chạy tại: http://localhost:${PORT}`);
-  console.log(`📡 Domain: https://tiksnap.space`);
-  console.log(`📋 Health: http://localhost:${PORT}/health`);
-  console.log(`📊 Stats: http://localhost:${PORT}/api/stats\n`);
-});
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`\n🚀 TikSnap chạy tại: http://localhost:${PORT}`);
+    console.log(`📡 Domain: https://tiksnap.space`);
+    console.log(`📋 Health: http://localhost:${PORT}/health`);
+    console.log(`📊 Stats: http://localhost:${PORT}/api/stats\n`);
+  });
+}
+
+module.exports = app;
